@@ -123,7 +123,7 @@ class Puzzle {
         puzzle_piece.style.margin = "0px"
 
         let puzzle_img = document.createElement('img')
-        puzzle_img.setAttribute("id", "img_" + new_id.toString())
+        puzzle_img.setAttribute("id", "piece_" + new_id.toString())
         puzzle_img.setAttribute("src", "./test_img.jpg")
         puzzle_img.setAttribute("draggable", "true")
         puzzle_img.setAttribute("ondragstart", "drag(event)")
@@ -144,26 +144,27 @@ class Puzzle {
     createSlot(top_left_x, top_left_y, bottom_right_x, bottom_right_y) {
 
         // create the new slot
-        const pieces = this.pieces
+        const slots = this.slots
         let new_id = 0
-        if (pieces.length !== 0) { new_id = pieces[pieces.length - 1].slot_id + 1 }
+        if (slots.length !== 0) { new_id = slots[slots.length - 1].slot_id + 1 }
         const new_slot = new Slot(new_id, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
 
         // store slot into array
         this.slots.push(new_slot)
 
-        // create the new piece in DOM
-        let puzzle_piece = document.createElement('figure')
-        puzzle_piece.setAttribute("id", "drop_area")
-        puzzle_piece.setAttribute("ondrop", "drop(event)")
-        puzzle_piece.setAttribute("ondragover", "allowDrop(event)")
+        // create the new slot in DOM
+        let puzzle_slot = document.createElement('figure')
+        puzzle_slot.setAttribute("id", "slot_" + new_id.toString())
+        puzzle_slot.setAttribute("ondrop", "drop(event)")
+        puzzle_slot.setAttribute("ondragover", "allowDrop(event)")
+        puzzle_slot.addEventListener("drop", () => { this.updateValidity(event) })
 
-        puzzle_piece.style.gridColumnStart = top_left_x.toString()
-        puzzle_piece.style.gridColumnEnd = bottom_right_x.toString()
-        puzzle_piece.style.gridRowStart = top_left_y.toString()
-        puzzle_piece.style.gridRowEnd = bottom_right_y.toString()
-        puzzle_piece.style.margin = "0px"
-        puzzle_piece.style.backgroundColor = "white"
+        puzzle_slot.style.gridColumnStart = top_left_x.toString()
+        puzzle_slot.style.gridColumnEnd = bottom_right_x.toString()
+        puzzle_slot.style.gridRowStart = top_left_y.toString()
+        puzzle_slot.style.gridRowEnd = bottom_right_y.toString()
+        puzzle_slot.style.margin = "0px"
+        puzzle_slot.style.backgroundColor = "white"
 
         // let puzzle_img = document.createElement('div')
         // puzzle_img.innerHTML = "hello"
@@ -180,9 +181,58 @@ class Puzzle {
         // puzzle_piece.appendChild(puzzle_img)
         let container = document.querySelector('.puzzle_area')
         // puzzle_piece.appendChild(content)
-        container.appendChild(puzzle_piece)
+        container.appendChild(puzzle_slot)
 
         return new_id
+    }
+
+    linkPieceToSlot(piece_id, slot_id) {
+
+        let target_piece = null
+        let target_slot = null
+        for (let i = 0; i < this.pieces.length; ++i) {
+            if (this.pieces[i].piece_id === piece_id) { target_piece = this.pieces[i] }
+        }
+
+        for (let j = 0; j < this.slots.length; ++j) {
+            if (this.slots[j].slot_id === slot_id) { target_slot = this.slots[j] }
+        }
+
+        if (target_piece === null) { console.log("cannot find piece in array") }
+        if (target_slot === null) { console.log("cannot find slot in array") }
+
+        target_piece.linked_slot = slot_id
+    }
+
+    updateValidity(event) {
+        const target_slot = event.target
+        const target_slot_id = parseInt(target_slot.id.substring(5), 10)
+        const child_piece = target_slot.firstElementChild
+        const child_piece_id = parseInt(child_piece.id.substring(6), 10)
+        let piece_info = null
+
+        // console.log(typeof target_slot_id)
+        // console.log(typeof this.pieces[0].piece_id)
+
+        for (let i = 0; i < this.pieces.length; ++i) {
+            if (this.pieces[i].piece_id === child_piece_id) {
+                piece_info = this.pieces[i]
+            }
+        }
+
+        if (piece_info.linked_slot === target_slot_id) { piece_info.correct = true }
+        else { piece_info.correct = false }
+        
+        console.log(piece_info.correct)
+    }
+
+    checkIfCorrect(piece_id) {
+        for (let i = 0; i < this.pieces.length; ++i) {
+            if (this.pieces[i].piece_id === piece_id) {
+                return this.pieces[i].correct
+            }
+        }
+        return false
     }
 }
 
@@ -199,6 +249,10 @@ function drop(event) {
     var data = event.dataTransfer.getData("text")
     event.target.appendChild(document.getElementById(data))
 }
+
+// function test(event) {
+//     console.log("dsfadsfafadfdsafdfasfd")
+// }
 
 class Piece {
     constructor(piece_content, piece_id) {
