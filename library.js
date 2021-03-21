@@ -103,7 +103,7 @@ class Puzzle {
     }
 
     // create a new puzzle piece, put in pieces array and display it
-    createPiece(piece_content, top_left_x, top_left_y, bottom_right_x, bottom_right_y) {
+    createPiece(piece_content, position) {
 
         // find new piece_id for the new piece
         const pieces = this.pieces
@@ -111,34 +111,29 @@ class Puzzle {
         if (pieces.length !== 0) { new_id = pieces[pieces.length - 1].piece_id + 1 }
 
         // create a new Piece object and store in array
-        let new_piece = new Piece(piece_content, new_id, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
+        let new_piece = new Piece(piece_content, new_id)
         this.pieces.push(new_piece)
 
-        // create the new piece in DOM
+        // create the piece in DOM
         let puzzle_piece = document.createElement('figure')
-        puzzle_piece.style.gridColumnStart = top_left_x.toString()
-        puzzle_piece.style.gridColumnEnd = bottom_right_x.toString()
-        puzzle_piece.style.gridRowStart = top_left_y.toString()
-        puzzle_piece.style.gridRowEnd = bottom_right_y.toString()
+        puzzle_piece.style.gridColumnStart = "1"
+        puzzle_piece.style.gridColumnEnd = "2"
+        puzzle_piece.style.gridRowStart = position.toString()
+        puzzle_piece.style.gridRowEnd = (position + 1).toString()
         puzzle_piece.style.margin = "0px"
 
-        // let puzzle_img = document.createElement('div')
-        // puzzle_img.style.width = "100%"
-        // puzzle_img.style.height = "100%"
-        // puzzle_img.style.objectFit = "cover"
-        // puzzle_img.style.color = "black"
-
         let puzzle_img = document.createElement('img')
+        puzzle_img.setAttribute("id", "img_" + new_id.toString())
         puzzle_img.setAttribute("src", "./test_img.jpg")
+        puzzle_img.setAttribute("draggable", "true")
+        puzzle_img.setAttribute("ondragstart", "drag(event)")
+
         puzzle_img.style.width = "100%"
         puzzle_img.style.height = "100%"
         puzzle_img.style.objectFit = "cover"
 
         puzzle_piece.appendChild(puzzle_img)
-
-        // let content = document.createTextNode(piece_content)
-
-        let container = document.querySelector('.puzzle_area')
+        let container = document.querySelector('.pieces_tray')
         // puzzle_piece.appendChild(content)
         container.appendChild(puzzle_piece)
 
@@ -146,35 +141,81 @@ class Puzzle {
     }
 
     // create a new puzzle slot
-    createSlot() {
+    createSlot(top_left_x, top_left_y, bottom_right_x, bottom_right_y) {
 
         // create the new slot
         const pieces = this.pieces
         let new_id = 0
         if (pieces.length !== 0) { new_id = pieces[pieces.length - 1].slot_id + 1 }
-        const new_slot = new Slot(new_id)
+        const new_slot = new Slot(new_id, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
 
         // store slot into array
         this.slots.push(new_slot)
+
+        // create the new piece in DOM
+        let puzzle_piece = document.createElement('figure')
+        puzzle_piece.setAttribute("id", "drop_area")
+        puzzle_piece.setAttribute("ondrop", "drop(event)")
+        puzzle_piece.setAttribute("ondragover", "allowDrop(event)")
+
+        puzzle_piece.style.gridColumnStart = top_left_x.toString()
+        puzzle_piece.style.gridColumnEnd = bottom_right_x.toString()
+        puzzle_piece.style.gridRowStart = top_left_y.toString()
+        puzzle_piece.style.gridRowEnd = bottom_right_y.toString()
+        puzzle_piece.style.margin = "0px"
+        puzzle_piece.style.backgroundColor = "white"
+
+        // let puzzle_img = document.createElement('div')
+        // puzzle_img.innerHTML = "hello"
+        // puzzle_img.style.width = "100%"
+        // puzzle_img.style.height = "100%"
+        // puzzle_img.style.backgroundColor = "white"
+
+        // // let puzzle_img = document.createElement('img')
+        // // puzzle_img.setAttribute("src", "./test_img.jpg")
+        // // puzzle_img.style.width = "100%"
+        // // puzzle_img.style.height = "100%"
+        // // puzzle_img.style.objectFit = "cover"
+
+        // puzzle_piece.appendChild(puzzle_img)
+        let container = document.querySelector('.puzzle_area')
+        // puzzle_piece.appendChild(content)
+        container.appendChild(puzzle_piece)
+
+        return new_id
     }
 }
 
+function drag(event) {
+    event.dataTransfer.setData("text", event.target.id);
+}
+
+function allowDrop(event) {
+    event.preventDefault()
+}
+
+function drop(event) {
+    event.preventDefault()
+    var data = event.dataTransfer.getData("text")
+    event.target.appendChild(document.getElementById(data))
+}
+
 class Piece {
-    constructor(piece_content, piece_id, top_left_x, top_left_y, bottom_right_x, bottom_right_y) {
+    constructor(piece_content, piece_id) {
         this.piece_id = piece_id
         this.piece_content = piece_content
-        this.top_left_x = top_left_x
-        this.top_left_y = top_left_y
-        this.bottom_right_x = bottom_right_x
-        this.bottom_right_y = bottom_right_y
         this.linked_slot = null
         this.correct = false
     }
 }
 
 class Slot {
-    constructor(slot_id) {
+    constructor(slot_id, top_left_x, top_left_y, bottom_right_x, bottom_right_y) {
         this.slot_id = slot_id
+        this.top_left_x = top_left_x
+        this.top_left_y = top_left_y
+        this.bottom_right_x = bottom_right_x
+        this.bottom_right_y = bottom_right_y
     }
 }
 
