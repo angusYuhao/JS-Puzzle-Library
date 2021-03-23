@@ -1,7 +1,6 @@
 // library class definitions
 // NOTE: All styles will be tranferred to a CSS file
 "use strict";
-console.log("hello there!")
 
 class imagePuzzle {
 
@@ -15,12 +14,10 @@ class imagePuzzle {
         this.num_rows = num_rows
         this.num_cols = num_cols
         this.completed = false
-        console.log("please kill me")
         
     }
 
     display() {
-        console.log(this.pieces)
         this.loadWindow(this.img_url, this.num_rows, this.num_cols, this.cutImage)
     }
 
@@ -33,9 +30,6 @@ class imagePuzzle {
     }
 
     loadWindow(img_url, num_rows, num_cols, callback) {
-
-        console.log("loadWindow", this.pieces)
-        console.log("adfsa efwhifh ehaifu he", img_url)
 
         let puzzle_window = document.createElement('div')
         puzzle_window.setAttribute("class", "puzzle_window")
@@ -160,18 +154,13 @@ class imagePuzzle {
     }
 
     cutImage(img_url, num_rows, num_cols, callback) {
-        // console.log("cutImage", this.pieces)
 
-        // console.log("asdf", num_cols)
-    
         const img_element = new Image()
         img_element.setAttribute("id", "puzzle_image")
         img_element.setAttribute("src", img_url)
         img_element.onload = () => {
             const width = Math.floor(img_element.naturalWidth / num_cols)
             const height = Math.floor(img_element.naturalHeight / num_rows)
-            // console.log(width)
-            // console.log(height)
     
             let image = new Image()
             image.src = img_url
@@ -197,7 +186,6 @@ class imagePuzzle {
                     puzzle_pieces.push(canvas)
                 }
             }
-            console.log("bbbb", puzzle_pieces)
             
             callback(puzzle_pieces, num_cols, num_rows, height, width)
     
@@ -205,8 +193,6 @@ class imagePuzzle {
     }
 
     displayTray(puzzle_pieces, num_cols, num_rows, height, width) {
-        // console.log(puzzle_pieces)
-        // console.log("displayTray", this.pieces)
     
         const pieces_tray = document.querySelector(".pieces_tray")
     
@@ -224,11 +210,7 @@ class imagePuzzle {
             slot.style.gridRowEnd = (i + 2).toString()
             slot.style.margin = "0px"
             slot.style.backgroundColor = "white"
-
-            // slot.style.minHeight = "50px"
-            // console.log("pelase", height)
             slot.style.minHeight = (160).toString() + "px"
-            // slot.style.width = width.toString() + "px"
     
             puzzle_pieces[i].style.height = "100%"
             puzzle_pieces[i].style.width = "100%"
@@ -250,16 +232,13 @@ class imagePuzzle {
 
         let piece_info = null
 
-        // console.log(typeof target_slot_id)
-        // console.log(typeof this.pieces[0].piece_id)
-
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i].piece_id === child_piece_id) {
                 piece_info = this.pieces[i]
             }
         }
 
-        if (piece_info === null) { console.log("god help me") }
+        if (piece_info === null) { console.log("not found") }
         else if (target_slot.id.substring(0, 4) === "tray") { piece_info.correct = false }
         else if (child_piece_id === target_slot_id) { piece_info.correct = true }
         else { piece_info.correct = false }
