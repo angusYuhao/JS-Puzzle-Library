@@ -1,25 +1,41 @@
-// library use examples
+// library examples
 "use strict"
 console.log("examples!")
 
-// const puzzle = new Puzzle(3, 'grid')
-// puzzle.createSlot(1, 1, 2, 2)
-// puzzle.createSlot(2, 1, 3, 2)
-// puzzle.createSlot(2, 2, 4, 4)
-// puzzle.createPiece("lmao", 1)
-// puzzle.createPiece("ok", 2)
-// puzzle.createPiece("lol", 3)
-// puzzle.linkPieceToSlot(0, 1)
-// puzzle.linkPieceToSlot(2, 2)
+// create a 2 x 2 puzzle and set time to finish to 30 seconds
+const puzzle1 = new imagePuzzle("./test_img.jpg", 2, 2)
+puzzle1.display()
 
-// puzzle.deletePiece(1)
+const openbutton = document.querySelector('#open_puzzle1')
+openbutton.setAttribute('onClick', 'helper()')
 
-const puzzle = new imagePuzzle("./test_img.jpg", 3, 3)
-puzzle.display()
-// puzzle.checkIfCorrect(0)
-// puzzle.definePuzzleArea(100, 100)
-// puzzle.createPiece("nice")
-// puzzle.createPiece("great")
+function helper() {
+    puzzle1.openPuzzleWindow();
+    startTimer();
+}
 
-const openbutton = document.querySelector('#open_puzzle')
-openbutton.addEventListener('click', function () { puzzle.openPuzzleWindow() })
+function startTimer() {
+    var counter = 0
+    var interval = setInterval( () => {
+        let parent = document.querySelector('#status_container')
+        let status_text = document.querySelector('#puzzle_status')
+        if (counter === 30) {
+    
+            let status = puzzle1.checkIfCompleted()
+            parent.removeChild(status_text)
+            if (status === true) {
+                status_text.innerHTML = "Finished in time!"
+            }
+            else {
+                status_text.innerHTML = "Didn't finish in time!"
+            }
+            parent.appendChild(status_text)
+            clearInterval(interval)
+            return
+        }
+        parent.removeChild(status_text)
+        status_text.innerHTML = (parseInt(status_text.innerHTML, 10) - 1).toString()
+        parent.appendChild(status_text)
+        counter += 1
+    }, 1000)
+}

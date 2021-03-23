@@ -14,6 +14,7 @@ class imagePuzzle {
         this.img_url = img_url
         this.num_rows = num_rows
         this.num_cols = num_cols
+        this.completed = false
         console.log("please kill me")
         
     }
@@ -280,6 +281,7 @@ class imagePuzzle {
                 status.style.color = "red"
 
                 parent.appendChild(status)
+                this.completed = false
                 return false
             }
         }
@@ -287,7 +289,12 @@ class imagePuzzle {
         status.innerHTML = "Correct!"
         status.style.color = "green"
         parent.appendChild(status)
+        this.completed = true
         return true
+    }
+
+    checkIfCompleted() {
+        return this.completed
     }
 
 }
