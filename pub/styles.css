@@ -1,0 +1,27 @@
+.puzzleCanvas {
+    overflow: scroll;
+    float: left;
+    /* max-width: 80%; */
+    /* min-width: 100px;
+    min-height: 100px; */
+    width: 100%;
+    height: 100%;
+    /* margin = "55px 15px 15px 15px" */
+    border: 2px solid;
+    display: grid;
+    gap: 10px;
+}
+
+.piecesTray {
+    overflow: scroll;
+    float: left;
+    /* max-width: 100%; */
+    width: 100%;
+    height: 100%;
+    /* margin = "55px 15px 15px 15px" */
+    border: 2px solid;
+    display: grid;
+    /* grid-template-columns: repeat(1, 1fr); */
+    /* grid-template-rows: repeat(" + (numRows * numCols).toString() + ", 1fr) */
+    gap: 10px;
+}

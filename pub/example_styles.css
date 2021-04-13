@@ -1,0 +1,9 @@
+#canvasContainer {
+    min-width: 200px;
+    min-height: 500px;
+}
+
+#trayContainer {
+    width: 50%;
+    min-height: 100px;
+}

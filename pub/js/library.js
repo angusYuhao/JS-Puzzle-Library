@@ -5,170 +5,115 @@
 class imagePuzzle {
 
     // object constructor
-    constructor(img_url, num_rows, num_cols) {
+    constructor(puzzleType) {
 
+        this.type = puzzleType
         this.pieces = []
         this.slots = []
-        this.puzzle_window = null
-        this.img_url = img_url
-        this.num_rows = num_rows
-        this.num_cols = num_cols
+        this.puzzleWindow = null
+        this.imgURL = null
+        this.numRows = 1
+        this.numCols = 1
         this.completed = false
-        
     }
 
-    display() {
-        this.loadWindow(this.img_url, this.num_rows, this.num_cols, this.cutImage)
+    // bind puzzle image
+    bindImage(imgURL) {
+        this.imgURL = imgURL
     }
 
-    openPuzzleWindow() {
-        this.puzzle_window.style.display = "block"
+    // set the dimension for puzzle
+    setDimensions(numRows, numCols) {
+        this.numRows = numRows
+        this.numCols = numCols
     }
 
-    closePuzzleWindow() {
-        this.puzzle_window.style.display = "none"
-    }
+    // create the main canvas
+    createCanvas(parentElement) {
 
-    loadWindow(img_url, num_rows, num_cols, callback) {
+        let height = parentElement.clientHeight
+        let width = parentElement.clientWidth
 
-        let puzzle_window = document.createElement('div')
-        puzzle_window.setAttribute("class", "puzzle_window")
-        puzzle_window.style.display = "none"
-        puzzle_window.style.width = "100%"
-        puzzle_window.style.height = "100%"
-        puzzle_window.style.position = "fixed"
-        puzzle_window.style.zIndex = "1"
-        puzzle_window.style.top = "0"
-        puzzle_window.style.left = "0"
-        puzzle_window.style.backgroundColor = "rgba(210, 210, 210, 0.9)"
-    
-        let close_button = document.createElement('button')
-        close_button.setAttribute("class", "close")
-        close_button.setAttribute("title", "Close")
-        close_button.addEventListener("click", () => { this.closePuzzleWindow() })
-        close_button.innerHTML = "close"
-        close_button.style.position = "absolute"
-        close_button.style.top = "20px"
-        close_button.style.right = "20px"
-        close_button.style.fontSize = "20px"
-        close_button.style.cursor = "pointer"
-        close_button.style.color = "rgba(255, 50, 50, 1)"
-    
-        let puzzle_area = document.createElement('div')
-        puzzle_area.setAttribute("class", "puzzle_area")
-        puzzle_area.style.overflow = "scroll"
-        puzzle_area.style.float = "left"
-        puzzle_area.style.maxWidth = "80%"
-        puzzle_area.style.width = "70%"
-        puzzle_area.style.height = "80%"
-        puzzle_area.style.margin = "55px 15px 15px 15px"
-        puzzle_area.style.border = "2px solid"
-        puzzle_area.style.display = "grid"
-        puzzle_area.style.gridTemplateColumns = "repeat(" + num_cols + ", 1fr)"
-        puzzle_area.style.gridTemplateRows = "repeat(" + num_rows + ", 1fr)"
-        puzzle_area.style.gridGap = "10px"
+        let puzzleCanvas = document.createElement('div')
+        puzzleCanvas.setAttribute("class", "puzzleCanvas")
+        puzzleCanvas.style.gridTemplateRows = "repeat(" + (this.numRows).toString() + ", 1fr)"
+        puzzleCanvas.style.gridTemplateColumns = "repeat(" + (this.numCols).toString() + ", 1fr)"
 
-        for (let x = 0; x < num_cols; ++x) {
-            for (let y = 0; y < num_rows; ++y) {
-                let new_id = x * num_rows + y
-                console.log("slot_ids", new_id)
+        // create the slots
+        for (let x = 0; x < this.numCols; ++x) {
+            for (let y = 0; y < this.numRows; ++y) {
+
+                let newID = x * this.numRows + y
+                console.log("slotIDs", newID)
 
                 // create slot in object array
-                let slot = new Slot(new_id, x + 1, y + 1, x + 2, y + 2)
+                let slot = new Slot(newID, x + 1, y + 1, x + 2, y + 2)
                 this.slots.push(slot)
 
                 // create piece in object array
-                let piece = new Piece(new_id)
+                let piece = new Piece(newID)
                 this.pieces.push(piece)
 
                 // create slot in DOM
-                let puzzle_area_slot = document.createElement('div')
-                puzzle_area_slot.setAttribute("id", "slot_" + new_id.toString())
-                puzzle_area_slot.setAttribute("ondrop", "drop(event)")
-                puzzle_area_slot.setAttribute("ondragover", "allowDrop(event)")
-                puzzle_area_slot.addEventListener("drop", () => { this.checkValidity(event) })
+                let canvasSlot = document.createElement('div')
+                canvasSlot.setAttribute("id", "slot_" + newID.toString())
+                canvasSlot.setAttribute("ondrop", "drop(event)")
+                canvasSlot.setAttribute("ondragover", "allowDrop(event)")
+                canvasSlot.addEventListener("drop", () => { this.checkValidity(event) })
 
-                puzzle_area_slot.style.gridColumnStart = (x + 1).toString()
-                puzzle_area_slot.style.gridColumnEnd = (x + 2).toString()
-                puzzle_area_slot.style.gridRowStart = (y + 1).toString()
-                puzzle_area_slot.style.gridRowEnd = (y + 2).toString()
-                puzzle_area_slot.style.maxHeight = "100%"
-                puzzle_area_slot.style.maxWidth = "100%"
-                puzzle_area_slot.style.margin = "0px"
-                puzzle_area_slot.style.backgroundColor = "white"
+                canvasSlot.style.gridColumnStart = (x + 1).toString()
+                canvasSlot.style.gridColumnEnd = (x + 2).toString()
+                canvasSlot.style.gridRowStart = (y + 1).toString()
+                canvasSlot.style.gridRowEnd = (y + 2).toString()
+                // canvasSlot.style.maxHeight = "100%"
+                // canvasSlot.style.maxWidth = "100%"
+                // console.log("this is the width", (Math.floor(width / this.numCols)))
+                canvasSlot.style.minWidth = (Math.floor(width / this.numCols)).toString() + "px"
+                canvasSlot.style.minHeight = (Math.floor(height / this.numRows)).toString() + "px"
+                canvasSlot.style.margin = "0px"
+                canvasSlot.style.backgroundColor = "grey"
 
-                puzzle_area.appendChild(puzzle_area_slot)
+                puzzleCanvas.appendChild(canvasSlot)
             }
         }
 
-        let pieces_tray = document.createElement('div')
-        pieces_tray.setAttribute("class", "pieces_tray")
-        // pieces_tray.style.position = "relative"
-        pieces_tray.style.overflow = "scroll"
-        pieces_tray.style.float = "right"
-        pieces_tray.style.maxWidth = "20%"
-        pieces_tray.style.width = "20%"
-        pieces_tray.style.height = "80%"
-        pieces_tray.style.margin = "55px 15px 15px 15px"
-        pieces_tray.style.border = "2px solid"
-        pieces_tray.style.display = "grid"
-        pieces_tray.style.gridTemplateColumns = "repeat(1, 1fr)"
-        pieces_tray.style.gridTemplateRows = "repeat(" + (num_rows * num_cols).toString() + ", 1fr)"
-        pieces_tray.style.gridGap = "10px"
-
-        let check_button = document.createElement('button')
-        check_button.setAttribute("class", "check")
-        check_button.setAttribute("title", "Check Answer")
-        check_button.addEventListener("click", () => { this.checkComplete() })
-        check_button.innerHTML = "Submit"
-        check_button.style.position = "absolute"
-        check_button.style.bottom = "20px"
-        check_button.style.left = "100px"
-        check_button.style.fontSize = "20px"
-        check_button.style.cursor = "pointer"
-        // check_button.style.color = "rgba(255, 50, 50, 1)"
-
-        let status_text = document.createElement('span')
-        status_text.setAttribute("class", "status")
-        // check_button.setAttribute("title", "Check Answer")
-        status_text.innerHTML = "N/A"
-        status_text.style.position = "absolute"
-        status_text.style.bottom = "20px"
-        status_text.style.right = "100px"
-        status_text.style.fontSize = "40px"
-        status_text.style.cursor = "pointer"
-        status_text.style.color = "grey"
-    
-        puzzle_window.appendChild(close_button)
-        puzzle_window.appendChild(puzzle_area)
-        puzzle_window.appendChild(pieces_tray)
-        puzzle_window.appendChild(check_button)
-        puzzle_window.appendChild(status_text)
-
-        const parent = document.querySelector('body')
-        parent.appendChild(puzzle_window)
-    
-        this.puzzle_window = puzzle_window
-    
-        callback(img_url, num_rows, num_cols, this.displayTray)
+        parentElement.appendChild(puzzleCanvas)
     }
 
-    cutImage(img_url, num_rows, num_cols, callback) {
+    createTray(parentElement, numRows, numCols, orderMap) {
+        this.createTrayHelper(parentElement, numRows, numCols, orderMap, this.cutImage)
+    }
+
+    // create the pieces tray, orderMap takes in 2D array
+    createTrayHelper(parentElement, numRows, numCols, orderMap, callback) {
+
+        // create the pieces tray for the puzzle pieces
+        let piecesTray = document.createElement('div')
+        piecesTray.setAttribute("class", "piecesTray")
+        piecesTray.style.gridTemplateRows = "repeat(" + (numRows).toString() + ", 1fr)"
+        piecesTray.style.gridTemplateColumns = "repeat(" + (numCols).toString() + ", 1fr)"
+
+        parentElement.appendChild(piecesTray)
+
+        callback(this.imgURL, this.numRows, this.numCols, numRows, numCols, orderMap, parentElement.clientHeight, parentElement.clientWidth, this.displayTray)
+    }
+
+    cutImage(imgURL, cNumRows, cNumCols, tNumRows, tNumCols, orderMap, pHeight, pWidth, callback) {
 
         const img_element = new Image()
         img_element.setAttribute("id", "puzzle_image")
-        img_element.setAttribute("src", img_url)
+        img_element.setAttribute("src", imgURL)
         img_element.onload = () => {
-            const width = Math.floor(img_element.naturalWidth / num_cols)
-            const height = Math.floor(img_element.naturalHeight / num_rows)
+            const width = Math.floor(img_element.naturalWidth / cNumCols)
+            const height = Math.floor(img_element.naturalHeight / cNumRows)
     
             let image = new Image()
-            image.src = img_url
+            image.src = imgURL
             // image.setAttribute("crossOrigin", "anonymous")
     
-            let puzzle_pieces = []
-            for (let x = 0; x < num_cols; ++x) {
-                for (let y = 0; y < num_rows; ++y) {
+            let puzzlePiecesArr = []
+            for (let x = 0; x < cNumCols; ++x) {
+                for (let y = 0; y < cNumRows; ++y) {
 
                     let canvas = document.createElement('canvas')
                     canvas.width = width
@@ -177,51 +122,207 @@ class imagePuzzle {
                     let context = canvas.getContext('2d')
                     context.drawImage(image, x * width, y * height, width, height, 0, 0, canvas.width, canvas.height)
                     
-                    let new_id = x * num_rows + y
-                    console.log("piece_ids", new_id)
+                    let newID = x * cNumRows + y
+                    console.log("piece_ids", newID)
 
-                    canvas.setAttribute("id", "piece_" + new_id.toString())
+                    canvas.setAttribute("id", "piece_" + newID.toString())
                     canvas.setAttribute("draggable", "true")
                     canvas.setAttribute("ondragstart", "drag(event)")
-                    puzzle_pieces.push(canvas)
+                    puzzlePiecesArr.push(canvas)
                 }
             }
             
-            callback(puzzle_pieces, num_cols, num_rows, height, width)
+            callback(puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap)
     
         }
     }
 
-    displayTray(puzzle_pieces, num_cols, num_rows, height, width) {
+    displayTray(puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap) {
     
-        const pieces_tray = document.querySelector(".pieces_tray")
+        const piecesTray = document.querySelector(".piecesTray")
+        // const puzzleCanvas = document.querySelector(".puzzleCanvas")
+
+        console.log(puzzlePiecesArr)
     
         // pieces tray slots
-        for (let i = 0; i < (num_cols * num_rows); ++i) {
-            let slot = document.createElement('div')
-            slot.setAttribute("id", "tray_" + i.toString())
-            slot.setAttribute("ondrop", "drop(event)")
-            slot.setAttribute("ondragover", "allowDrop(event)")
-            slot.addEventListener("drop", () => { this.checkValidity(event) })
-    
-            slot.style.gridColumnStart = "1"
-            slot.style.gridColumnEnd = "2"
-            slot.style.gridRowStart = (i + 1).toString()
-            slot.style.gridRowEnd = (i + 2).toString()
-            slot.style.margin = "0px"
-            slot.style.backgroundColor = "white"
-            slot.style.minHeight = (160).toString() + "px"
-    
-            puzzle_pieces[i].style.height = "100%"
-            puzzle_pieces[i].style.width = "100%"
-    
-            slot.appendChild(puzzle_pieces[i])
-            pieces_tray.appendChild(slot)
+        for (let x = 0; x < tNumCols; ++x) {
+            for (let y = 0; y < tNumRows; ++y) {
+
+                let newID = x * cNumRows + y
+                console.log("slotIDs", newID)
+
+                let slot = document.createElement('div')
+                slot.setAttribute("id", "tray_" + newID.toString())
+                slot.setAttribute("ondrop", "drop(event)")
+                slot.setAttribute("ondragover", "allowDrop(event)")
+                slot.addEventListener("drop", () => { this.checkValidity(event) })
+
+                slot.style.gridColumnStart = (x + 1).toString()
+                slot.style.gridColumnEnd = (x + 2).toString()
+                slot.style.gridRowStart = (y + 1).toString()
+                slot.style.gridRowEnd = (y + 2).toString()
+                slot.style.maxHeight = "100%"
+                slot.style.maxWidth = "100%"
+                slot.style.minHeight = (Math.floor(pHeight / tNumRows)).toString() + "px"
+                slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
+                slot.style.margin = "0px"
+                slot.style.backgroundColor = "grey"
+
+                puzzlePiecesArr[orderMap[y][x]].style.height = "100%"
+                puzzlePiecesArr[orderMap[y][x]].style.width = "100%"
+
+                slot.appendChild(puzzlePiecesArr[orderMap[y][x]])
+                piecesTray.appendChild(slot)
+            }
         }
-    
-        const parent = document.querySelector('.puzzle_window')
-        parent.appendChild(pieces_tray)
+
+        
     }
+
+    // display() {
+    //     this.loadWindow(this.imgURL, this.numRows, this.numCols, this.cutImage)
+    // }
+
+    // openPuzzleWindow() {
+    //     this.puzzleWindow.style.display = "block"
+    // }
+
+    // closePuzzleWindow() {
+    //     this.puzzleWindow.style.display = "none"
+    // }
+
+    // loadWindow(imgURL, numRows, numCols, callback) {
+
+    //     // create the puzzle window
+    //     let puzzleWindow = document.createElement('div')
+    //     puzzleWindow.setAttribute("class", "puzzleWindow")
+    //     puzzleWindow.style.display = "none"
+    //     puzzleWindow.style.width = "100%"
+    //     puzzleWindow.style.height = "100%"
+    //     puzzleWindow.style.position = "fixed"
+    //     puzzleWindow.style.zIndex = "1"
+    //     puzzleWindow.style.top = "0"
+    //     puzzleWindow.style.left = "0"
+    //     puzzleWindow.style.backgroundColor = "rgba(210, 210, 210, 0.9)"
+    
+    //     // create the close button for the puzzle window
+    //     let close_button = document.createElement('button')
+    //     close_button.setAttribute("class", "close")
+    //     close_button.setAttribute("title", "Close")
+    //     close_button.addEventListener("click", () => { this.closePuzzleWindow() })
+    //     close_button.innerHTML = "close"
+    //     close_button.style.position = "absolute"
+    //     close_button.style.top = "20px"
+    //     close_button.style.right = "20px"
+    //     close_button.style.fontSize = "20px"
+    //     close_button.style.cursor = "pointer"
+    //     close_button.style.color = "rgba(255, 50, 50, 1)"
+    
+    //     // create the puzzle area
+    //     let puzzle_area = document.createElement('div')
+    //     puzzle_area.setAttribute("class", "puzzle_area")
+    //     puzzle_area.style.overflow = "scroll"
+    //     puzzle_area.style.float = "left"
+    //     puzzle_area.style.maxWidth = "80%"
+    //     puzzle_area.style.width = "70%"
+    //     puzzle_area.style.height = "80%"
+    //     puzzle_area.style.margin = "55px 15px 15px 15px"
+    //     puzzle_area.style.border = "2px solid"
+    //     puzzle_area.style.display = "grid"
+    //     puzzle_area.style.gridTemplateColumns = "repeat(" + numCols + ", 1fr)"
+    //     puzzle_area.style.gridTemplateRows = "repeat(" + numRows + ", 1fr)"
+    //     puzzle_area.style.gridGap = "10px"
+
+    //     // create the slots
+    //     for (let x = 0; x < numCols; ++x) {
+    //         for (let y = 0; y < numRows; ++y) {
+    //             let newID = x * numRows + y
+    //             console.log("slot_ids", newID)
+
+    //             // create slot in object array
+    //             let slot = new Slot(newID, x + 1, y + 1, x + 2, y + 2)
+    //             this.slots.push(slot)
+
+    //             // create piece in object array
+    //             let piece = new Piece(newID)
+    //             this.pieces.push(piece)
+
+    //             // create slot in DOM
+    //             let canvasSlot = document.createElement('div')
+    //             canvasSlot.setAttribute("id", "slot_" + newID.toString())
+    //             canvasSlot.setAttribute("ondrop", "drop(event)")
+    //             canvasSlot.setAttribute("ondragover", "allowDrop(event)")
+    //             canvasSlot.addEventListener("drop", () => { this.checkValidity(event) })
+
+    //             canvasSlot.style.gridColumnStart = (x + 1).toString()
+    //             canvasSlot.style.gridColumnEnd = (x + 2).toString()
+    //             canvasSlot.style.gridRowStart = (y + 1).toString()
+    //             canvasSlot.style.gridRowEnd = (y + 2).toString()
+    //             canvasSlot.style.maxHeight = "100%"
+    //             canvasSlot.style.maxWidth = "100%"
+    //             canvasSlot.style.margin = "0px"
+    //             canvasSlot.style.backgroundColor = "white"
+
+    //             puzzle_area.appendChild(canvasSlot)
+    //         }
+    //     }
+
+    //     // create the pieces tray for the puzzle pieces
+    //     let piecesTray = document.createElement('div')
+    //     piecesTray.setAttribute("class", "piecesTray")
+    //     // piecesTray.style.position = "relative"
+    //     piecesTray.style.overflow = "scroll"
+    //     piecesTray.style.float = "right"
+    //     piecesTray.style.maxWidth = "20%"
+    //     piecesTray.style.width = "20%"
+    //     piecesTray.style.height = "80%"
+    //     piecesTray.style.margin = "55px 15px 15px 15px"
+    //     piecesTray.style.border = "2px solid"
+    //     piecesTray.style.display = "grid"
+    //     piecesTray.style.gridTemplateColumns = "repeat(1, 1fr)"
+    //     piecesTray.style.gridTemplateRows = "repeat(" + (numRows * numCols).toString() + ", 1fr)"
+    //     piecesTray.style.gridGap = "10px"
+
+    //     // create the check button
+    //     let check_button = document.createElement('button')
+    //     check_button.setAttribute("class", "check")
+    //     check_button.setAttribute("title", "Check Answer")
+    //     check_button.addEventListener("click", () => { this.checkComplete() })
+    //     check_button.innerHTML = "Submit"
+    //     check_button.style.position = "absolute"
+    //     check_button.style.bottom = "20px"
+    //     check_button.style.left = "100px"
+    //     check_button.style.fontSize = "20px"
+    //     check_button.style.cursor = "pointer"
+    //     // check_button.style.color = "rgba(255, 50, 50, 1)"
+
+    //     // create the status text for checking if the puzzle has been completed
+    //     let status_text = document.createElement('span')
+    //     status_text.setAttribute("class", "status")
+    //     // check_button.setAttribute("title", "Check Answer")
+    //     status_text.innerHTML = "N/A"
+    //     status_text.style.position = "absolute"
+    //     status_text.style.bottom = "20px"
+    //     status_text.style.right = "100px"
+    //     status_text.style.fontSize = "40px"
+    //     status_text.style.cursor = "pointer"
+    //     status_text.style.color = "grey"
+    
+    //     puzzleWindow.appendChild(close_button)
+    //     puzzleWindow.appendChild(puzzle_area)
+    //     puzzleWindow.appendChild(piecesTray)
+    //     puzzleWindow.appendChild(check_button)
+    //     puzzleWindow.appendChild(status_text)
+
+    //     const parent = document.querySelector('body')
+    //     parent.appendChild(puzzleWindow)
+    
+    //     this.puzzleWindow = puzzleWindow
+    
+    //     callback(imgURL, numRows, numCols, this.displayTray)
+    // }
+
+    
 
     checkValidity(event) {
         const target_slot = event.target
@@ -248,7 +349,7 @@ class imagePuzzle {
 
     checkComplete() {
 
-        let parent = document.querySelector('.puzzle_window')
+        let parent = document.querySelector('.puzzleWindow')
         let status = document.querySelector('.status')
 
         parent.removeChild(status)
@@ -291,13 +392,13 @@ class Puzzle {
         }
 
         let new_puzzle_container = document.createElement('div')
-        let new_pieces_tray = document.createElement('div')
+        let new_piecesTray = document.createElement('div')
         let new_puzzle_area = document.createElement('div')
         let new_puzzle_container_close = document.createElement('span')
         let new_check_button = document.createElement('span')
 
         // define styles for new_puzzle_container
-        new_puzzle_container.setAttribute("class", "puzzle_window")
+        new_puzzle_container.setAttribute("class", "puzzleWindow")
         new_puzzle_container.style.display = "none"
         new_puzzle_container.style.width = "100%"
         new_puzzle_container.style.height = "100%"
@@ -307,18 +408,18 @@ class Puzzle {
         new_puzzle_container.style.left = "0"
         new_puzzle_container.style.backgroundColor = "rgba(210, 210, 210, 0.9)"
 
-        // define styles for new_pieces_tray
-        new_pieces_tray.setAttribute("class", "pieces_tray")
-        new_pieces_tray.style.float = "right"
-        new_pieces_tray.style.maxWidth = "20%"
-        new_pieces_tray.style.width = "20%"
-        new_pieces_tray.style.height = "80%"
-        new_pieces_tray.style.margin = "55px 15px 15px 15px"
-        new_pieces_tray.style.border = "2px solid"
-        new_pieces_tray.style.display = "grid"
-        new_pieces_tray.style.gridTemplateColumns = "repeat(1, 1fr)"
-        new_pieces_tray.style.gridTemplateRows = "repeat(" + num_pieces.toString() + ", 1fr)"
-        new_pieces_tray.style.gridGap = "10px"
+        // define styles for new_piecesTray
+        new_piecesTray.setAttribute("class", "piecesTray")
+        new_piecesTray.style.float = "right"
+        new_piecesTray.style.maxWidth = "20%"
+        new_piecesTray.style.width = "20%"
+        new_piecesTray.style.height = "80%"
+        new_piecesTray.style.margin = "55px 15px 15px 15px"
+        new_piecesTray.style.border = "2px solid"
+        new_piecesTray.style.display = "grid"
+        new_piecesTray.style.gridTemplateColumns = "repeat(1, 1fr)"
+        new_piecesTray.style.gridTemplateRows = "repeat(" + num_pieces.toString() + ", 1fr)"
+        new_piecesTray.style.gridGap = "10px"
 
         // define styles for new_puzzle_area
         new_puzzle_area.setAttribute("class", "puzzle_area")
@@ -359,10 +460,10 @@ class Puzzle {
         new_check_button.style.cursor = "pointer"
         new_check_button.style.color = "rgba(255, 255, 255, 1)"
 
-        // place new_pieces_tray and new_puzzle_container_close in new_puzzle_container
+        // place new_piecesTray and new_puzzle_container_close in new_puzzle_container
         new_puzzle_container.appendChild(new_puzzle_container_close)
         new_puzzle_container.appendChild(new_puzzle_area)
-        new_puzzle_container.appendChild(new_pieces_tray)
+        new_puzzle_container.appendChild(new_piecesTray)
         new_puzzle_container.appendChild(new_check_button)
 
         // place puzzle container in DOM
@@ -377,14 +478,14 @@ class Puzzle {
         this.complete = false
         this.puzzle_container = new_puzzle_container
         this.puzzle_area = new_puzzle_area
-        this.pieces_tray = new_pieces_tray
+        this.piecesTray = new_piecesTray
 
     }
 
     // ========== User Functions ========== //
 
     // implement later
-    definePuzzleArea(height, width) {
+    definepuzzleCanvas(height, width) {
 
     }
 
@@ -393,16 +494,16 @@ class Puzzle {
 
         // find new piece_id for the new piece
         const pieces = this.pieces
-        let new_id = 0
-        if (pieces.length !== 0) { new_id = pieces[pieces.length - 1].piece_id + 1 }
+        let newID = 0
+        if (pieces.length !== 0) { newID = pieces[pieces.length - 1].piece_id + 1 }
 
         // create a new Piece object and store in array
-        let new_piece = new Piece(new_id)
+        let new_piece = new Piece(newID)
         this.pieces.push(new_piece)
 
         // create the piece in DOM
         let puzzle_piece = document.createElement('figure')
-        puzzle_piece.setAttribute("id", "tray_" + new_id.toString())
+        puzzle_piece.setAttribute("id", "tray_" + newID.toString())
         puzzle_piece.setAttribute("ondrop", "drop(event)")
         puzzle_piece.setAttribute("ondragover", "allowDrop(event)")
         puzzle_piece.addEventListener("drop", () => { this.updateValidity(event) })
@@ -414,7 +515,7 @@ class Puzzle {
         puzzle_piece.style.margin = "0px"
 
         let puzzle_img = document.createElement('img')
-        puzzle_img.setAttribute("id", "piece_" + new_id.toString())
+        puzzle_img.setAttribute("id", "piece_" + newID.toString())
         puzzle_img.setAttribute("src", "./test_img.jpg")
         puzzle_img.setAttribute("draggable", "true")
         puzzle_img.setAttribute("ondragstart", "drag(event)")
@@ -424,11 +525,11 @@ class Puzzle {
         puzzle_img.style.objectFit = "cover"
 
         puzzle_piece.appendChild(puzzle_img)
-        let container = document.querySelector('.pieces_tray')
+        let container = document.querySelector('.piecesTray')
         // puzzle_piece.appendChild(content)
         container.appendChild(puzzle_piece)
 
-        return new_id
+        return newID
     }
 
     // create a new puzzle slot
@@ -436,16 +537,16 @@ class Puzzle {
 
         // create the new slot
         const slots = this.slots
-        let new_id = 0
-        if (slots.length !== 0) { new_id = slots[slots.length - 1].slot_id + 1 }
-        const new_slot = new Slot(new_id, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
+        let newID = 0
+        if (slots.length !== 0) { newID = slots[slots.length - 1].slot_id + 1 }
+        const new_slot = new Slot(newID, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
 
         // store slot into array
         this.slots.push(new_slot)
 
         // create the new slot in DOM
         let puzzle_slot = document.createElement('figure')
-        puzzle_slot.setAttribute("id", "slot_" + new_id.toString())
+        puzzle_slot.setAttribute("id", "slot_" + newID.toString())
         puzzle_slot.setAttribute("ondrop", "drop(event)")
         puzzle_slot.setAttribute("ondragover", "allowDrop(event)")
         puzzle_slot.addEventListener("drop", () => { this.updateValidity(event) })
@@ -476,7 +577,7 @@ class Puzzle {
         // puzzle_piece.appendChild(content)
         container.appendChild(puzzle_slot)
 
-        return new_id
+        return newID
     }
 
     deletePiece(piece_id) {
