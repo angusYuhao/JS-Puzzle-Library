@@ -204,49 +204,55 @@ class imagePuzzle {
         }
     }
 
-    displayMatchingTray(numRows, numCols, orderMap, pHeight, pWidth) {
+    displayMatchingTray(tNumRows, tNumCols, orderMap, pHeight, pWidth) {
 
         imgArray = []
         for (let i = 0; i < this.pieces.length; i++) {
             let image = document.createElement('img')
             image.setAttribute("src", this.pieces[i].imgURL)
 
+            let newID = i
+            console.log("piece_ids", newID)
+
+            image.setAttribute("id", "piece_" + newID.toString())
+            image.setAttribute("draggable", "true")
+            image.ondragstart = () => { this.drag(event) }
+
             imgArray.push(image)
+            this.piecesDOM.push(image)
         }
 
-        // for (let y = 0; y < this.numRows; ++y) {
-        //     for (let x = 0; x < this.numCols; ++x) {
+        for (let y = 0; y < tNumRows; ++y) {
+            for (let x = 0; x < tNumCols; ++x) {
 
-        //         let newID = x * tNumRows + y
-        //         console.log("slotIDs", newID)
+                let newID = y * tNumCols + x
+                console.log("slotIDs!", newID)
 
-        //         let slot = document.createElement('div')
-        //         slot.setAttribute("id", "tray_" + newID.toString())
-        //         // slot.setAttribute("ondrop", "drop(event)")
-        //         // slot.setAttribute("ondragover", "allowDrop(event)")
-        //         slot.ondrop = () => { this.drop(event) }
-        //         slot.ondragover = () => { this.allowDrop(event) }
-        //         slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+                let slot = document.createElement('div')
+                slot.setAttribute("id", "tray_" + newID.toString())
+                slot.ondrop = () => { this.drop(event) }
+                slot.ondragover = () => { this.allowDrop(event) }
+                slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
-        //         slot.style.gridColumnStart = (x + 1).toString()
-        //         slot.style.gridColumnEnd = (x + 2).toString()
-        //         slot.style.gridRowStart = (y + 1).toString()
-        //         slot.style.gridRowEnd = (y + 2).toString()
-        //         slot.style.maxHeight = "100%"
-        //         slot.style.maxWidth = "100%"
-        //         slot.style.minHeight = (Math.floor(pHeight / tNumRows)).toString() + "px"
-        //         slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
-        //         slot.style.margin = "0px"
-        //         slot.style.backgroundColor = "grey"
+                slot.style.gridColumnStart = (x + 1).toString()
+                slot.style.gridColumnEnd = (x + 2).toString()
+                slot.style.gridRowStart = (y + 1).toString()
+                slot.style.gridRowEnd = (y + 2).toString()
+                slot.style.maxHeight = "100%"
+                slot.style.maxWidth = "100%"
+                slot.style.minHeight = (Math.floor(pHeight / tNumRows)).toString() + "px"
+                slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
+                slot.style.margin = "0px"
+                slot.style.backgroundColor = "grey"
 
-        //         puzzlePiecesArr[orderMap[(x * tNumRows + y)%cNumCols][Math.floor((x * tNumRows + y)/cNumCols)]].style.height = "100%"
-        //         puzzlePiecesArr[orderMap[(x * tNumRows + y)%cNumCols][Math.floor((x * tNumRows + y)/cNumCols)]].style.width = "100%"
+                imgArray[orderMap[y][x]].style.height = "100%"
+                imgArray[orderMap[y][x]].style.width = "100%"
 
-        //         slot.appendChild(puzzlePiecesArr[orderMap[(x * tNumRows + y)%cNumCols][Math.floor((x * tNumRows + y)/cNumCols)]])
-        //         piecesTray.appendChild(slot)
-        //         this.traySlotsDOM.push(slot)
-        //     }
-        // }
+                slot.appendChild(imgArray[orderMap[y][x]])
+                this.tray.appendChild(slot)
+                this.traySlotsDOM.push(slot)
+            }
+        }
     }
 
     cutImage(piecesTray, imgURL, cNumRows, cNumCols, tNumRows, tNumCols, orderMap, pHeight, pWidth) {
@@ -376,36 +382,6 @@ class imagePuzzle {
 
         parentElement.dispatchEvent(updateEvent)
     }
-
-    // checkComplete() {
-
-    //     let parent = document.querySelector('.puzzleWindow')
-    //     let status = document.querySelector('.status')
-
-    //     parent.removeChild(status)
-
-    //     for (let i = 0; i < this.pieces.length; ++i) {
-    //         if (this.pieces[i].correct === false) {
-    //             console.log("incomplete!")
-    //             status.innerHTML = "Incorrect!"
-    //             status.style.color = "red"
-
-    //             parent.appendChild(status)
-    //             this.completed = false
-    //             return false
-    //         }
-    //     }
-    //     console.log("complete!")
-    //     status.innerHTML = "Correct!"
-    //     status.style.color = "green"
-    //     parent.appendChild(status)
-    //     this.completed = true
-    //     return true
-    // }
-
-    // checkIfCompleted() {
-    //     return this.completed
-    // }
 
     drag(event) {
         console.log("draging")

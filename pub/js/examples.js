@@ -5,34 +5,51 @@ console.log("examples!")
 const canvasContainer1 = document.querySelector('#canvasContainer1')
 const trayContainer1 = document.querySelector('#trayContainer1')
 
-// const puzzle3 = new imagePuzzle("matching")
-// puzzle3.bindBackgroundImage("./test_img.jpg")
-// puzzle3.createMatchingCanvas(canvasContainer1)
-// puzzle3.createMatchingCanvasSlot("50px", "50px", "40px", "40px")
-
-// ==================================
-
-const canvasContainer2 = document.querySelector('#canvasContainer2')
-const trayContainer2 = document.querySelector('#trayContainer2')
-
 const orderMap = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8]
+    [1, 0]
 ]
 
 canvasContainer1.addEventListener('puzzleUpdated', function (e) {
     console.log("puzzle is completed:", e.detail.puzzleStatus)
 })
 
-const puzzle1 = new imagePuzzle("grid")
-puzzle1.bindImage("./test_img.jpg")
-// puzzle1.bindBackgroundImage("./test_img.jpg")
-puzzle1.setGridDimensions(3, 3)
-puzzle1.createGridCanvas(canvasContainer1)
-puzzle1.createTray(trayContainer1, 3, 3, orderMap)
+let idArray = []
+const puzzle3 = new imagePuzzle("matching")
+puzzle3.bindBackgroundImage("./test_img.jpg")
+puzzle3.createMatchingCanvas(canvasContainer1)
+let firstPiece = puzzle3.createMatchingCanvasSlot("50px", "50px", "40px", "40px")
+idArray.push(firstPiece)
+let secondPiece = puzzle3.createMatchingCanvasSlot("50px", "100px", "40px", "40px")
+idArray.push(secondPiece)
 
-// ==================================
+let imgArray = ["./test_img.jpg", "./rapture.jpg"]
+
+puzzle3.createMatchings(idArray, imgArray)
+puzzle3.createTray(trayContainer1, 1, 2, orderMap)
+
+// // ==================================
+
+// const canvasContainer2 = document.querySelector('#canvasContainer2')
+// const trayContainer2 = document.querySelector('#trayContainer2')
+
+// const orderMap = [
+//     [0, 1, 2],
+//     [3, 4, 5],
+//     [6, 7, 8]
+// ]
+
+// canvasContainer1.addEventListener('puzzleUpdated', function (e) {
+//     console.log("puzzle is completed:", e.detail.puzzleStatus)
+// })
+
+// const puzzle1 = new imagePuzzle("grid")
+// puzzle1.bindImage("./test_img.jpg")
+// // puzzle1.bindBackgroundImage("./test_img.jpg")
+// puzzle1.setGridDimensions(3, 3)
+// puzzle1.createGridCanvas(canvasContainer1)
+// puzzle1.createTray(trayContainer1, 3, 3, orderMap)
+
+// // ==================================
 
 // const puzzle2 = new imagePuzzle("grid")
 // puzzle2.bindImage("./rapture.jpg")
