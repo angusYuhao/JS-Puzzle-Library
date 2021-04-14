@@ -18,6 +18,8 @@ class imagePuzzle {
         this.piecesDOM = []
         this.canvasSlotsDOM = []
         this.traySlotsDOM = []
+        this.canvasParentDOM = null
+        this.trayParentDOM = null
         // this.puzzleWindow = null
         this.imgURL = null
         this.backgroundImgURL = null
@@ -94,7 +96,7 @@ class imagePuzzle {
                 // canvasSlot.setAttribute("ondragover", "allowDrop(event)")
                 canvasSlot.ondrop = () => { this.drop(event) }
                 canvasSlot.ondragover = () => { this.allowDrop(event) }
-                canvasSlot.addEventListener("drop", () => { this.checkValidity(event) })
+                canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
                 canvasSlot.style.gridColumnStart = (x + 1).toString()
                 canvasSlot.style.gridColumnEnd = (x + 2).toString()
@@ -113,8 +115,9 @@ class imagePuzzle {
             }
         }
 
-        this.canvas = puzzleCanvas
         parentElement.appendChild(puzzleCanvas)
+        this.canvas = puzzleCanvas
+        this.canvasParentDOM = parentElement
     }
 
     createTray(parentElement, numRows, numCols, orderMap) {
@@ -137,8 +140,9 @@ class imagePuzzle {
         piecesTray.style.gridTemplateRows = "repeat(" + (numRows).toString() + ", 1fr)"
         piecesTray.style.gridTemplateColumns = "repeat(" + (numCols).toString() + ", 1fr)"
 
-        this.tray = piecesTray
         parentElement.appendChild(piecesTray)
+        this.tray = piecesTray
+        this.trayParentDOM = parentElement
 
         this.cutImage(piecesTray, this.imgURL, this.numRows, this.numCols, numRows, numCols, orderMap, parentElement.clientHeight, parentElement.clientWidth, this.displayTray)
     }
@@ -205,7 +209,7 @@ class imagePuzzle {
                 // slot.setAttribute("ondragover", "allowDrop(event)")
                 slot.ondrop = () => { this.drop(event) }
                 slot.ondragover = () => { this.allowDrop(event) }
-                slot.addEventListener("drop", () => { this.checkValidity(event) })
+                slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
                 slot.style.gridColumnStart = (x + 1).toString()
                 slot.style.gridColumnEnd = (x + 2).toString()
@@ -228,7 +232,7 @@ class imagePuzzle {
         }
     }    
 
-    checkValidity(event) {
+    checkPieceCorrectness(event) {
         const target_slot = event.target
         const target_slot_id = parseInt(target_slot.id.substring(5), 10)
 
@@ -249,6 +253,26 @@ class imagePuzzle {
         else { piece_info.correct = false }
         
         console.log(piece_info.correct)
+
+        let puzzleCompleted = true
+
+        for (let i = 0; i < this.pieces.length; ++i) {
+            if (this.pieces[i].correct === false) {
+                console.log("incomplete!")
+                this.completed = false
+                puzzleCompleted = false
+            }
+        }
+
+        if (puzzleCompleted) { this.completed = true }
+
+        const parentElement = this.canvasParentDOM
+
+        const updateEvent = new CustomEvent('puzzleUpdated', { 
+            detail: { pieceStatus: piece_info.correct, puzzleStatus: this.completed } 
+        })
+
+        parentElement.dispatchEvent(updateEvent)
     }
 
     checkComplete() {
@@ -294,25 +318,21 @@ class imagePuzzle {
         console.log("dropping")
         event.preventDefault()
         let data = event.dataTransfer.getData("text")
-        console.log("data:", data)
+        // console.log("data:", data)
         let element = null
         for (let i = 0; i < this.piecesDOM.length; i++) {
-            console.log("pieces:", this.piecesDOM[i].id)
+            // console.log("pieces:", this.piecesDOM[i].id)
             if (this.piecesDOM[i].id === data) {
                 element = this.piecesDOM[i]
             }
         }
         if (element !== null) {
-            console.log("found!")
+            console.log("dropped!")
             event.target.appendChild(element)
         }
         else {
             console.log("cannot find piece, what is going on?")
         }
-    }
-    
-    test(event) {
-        console.log("dsfadsfafadfdsafdfasfd")
     }
 
 }
@@ -320,7 +340,7 @@ class imagePuzzle {
 class Piece {
     constructor(piece_id) {
         this.piece_id = piece_id
-        this.linked_slot = null
+        // this.linked_slot = null
         this.correct = false
     }
 }

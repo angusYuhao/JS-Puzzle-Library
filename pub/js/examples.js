@@ -14,6 +14,10 @@ const orderMap = [
     [6, 7, 8]
 ]
 
+canvasContainer1.addEventListener('puzzleUpdated', function (e) {
+    console.log("puzzle is completed:", e.detail.puzzleStatus)
+})
+
 const puzzle1 = new imagePuzzle("grid")
 puzzle1.bindImage("./test_img.jpg")
 // puzzle1.bindBackgroundImage("./test_img.jpg")
