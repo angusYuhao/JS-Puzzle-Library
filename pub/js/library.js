@@ -24,12 +24,19 @@ class imagePuzzle {
         this.canvasParentDOM = null
         this.trayParentDOM = null
         // Others
+        this.canvasParentWidth = null
         this.imgURL = null
+        this.imgWidth = null
+        this.imgHeight = null
         this.backgroundImgURL = null
+        this.backgroundImgWidth = null
+        this.backgroundImgHeight = null
         this.canvas = null
         this.tray = null
         this.numRows = 1
         this.numCols = 1
+        this.gridGapSize = 4
+        this.trayGapSize = 4
         this.completed = false
     }
 
@@ -52,20 +59,22 @@ class imagePuzzle {
     }
 
     // set the dimension for puzzle
-    setGridDimensions(numRows, numCols) {
+    setGridDimensions(numRows, numCols, gapSize) {
         if (this.type !== "grid") {
             return false
         }
         this.numRows = numRows
         this.numCols = numCols
+        this.gridGapSize = gapSize
         return true
     }
 
     // create the main canvas
     createGridCanvas(parentElement) {
 
-        let height = parentElement.clientHeight
-        let width = parentElement.clientWidth
+        let windowWidth = parentElement.clientWidth
+
+        this.canvasParentWidth = windowWidth
 
         let puzzleCanvas = document.createElement('div')
         puzzleCanvas.setAttribute("class", "puzzleGridCanvas")
@@ -77,98 +86,153 @@ class imagePuzzle {
             puzzleCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
         }
 
-        // create the slots
-        for (let y = 0; y < this.numRows; ++y) {
-            for (let x = 0; x < this.numCols; ++x) {
+        const img_element = new Image()
+        img_element.setAttribute("id", "testPuzzleImage")
+        img_element.setAttribute("src", this.imgURL)
+        img_element.onload = () => {
 
-                let newID = y * this.numCols + x
-                console.log("slotIDs", newID)
+            const imgWidth = img_element.naturalWidth
+            const imgHeight = img_element.naturalHeight
 
-                // create slot in object array
-                let slot = new Slot(newID, x + 1, y + 1, x + 2, y + 2)
-                this.canvasSlots.push(slot)
+            this.imgWidth = imgWidth
+            this.imgHeight = imgHeight
 
-                // create piece in object array
-                let piece = new Piece(newID, newID, null)
-                this.pieces.push(piece)
+            const width = Math.floor((img_element.naturalWidth / this.numCols) * (windowWidth / img_element.naturalWidth) - (this.gridGapSize * (this.numCols - 1)))
+            const height = Math.floor((img_element.naturalHeight / this.numRows) * (windowWidth / img_element.naturalWidth) - (this.gridGapSize * (this.numRows - 1)))
 
-                // create slot in DOM
+            // create the slots
+            for (let y = 0; y < this.numRows; ++y) {
+                for (let x = 0; x < this.numCols; ++x) {
+
+                    let newID = y * this.numCols + x
+                    console.log("slotIDs", newID)
+
+                    // create slot in object array
+                    let slot = new Slot(newID, x + 1, y + 1, x + 2, y + 2)
+                    this.canvasSlots.push(slot)
+
+                    // create piece in object array
+                    let piece = new Piece(newID, newID, null)
+                    this.pieces.push(piece)
+
+                    // create slot in DOM
+                    let canvasSlot = document.createElement('div')
+                    canvasSlot.setAttribute("id", "slot_" + newID.toString())
+                    canvasSlot.ondrop = () => { this.drop(event) }
+                    canvasSlot.ondragover = () => { this.allowDrop(event) }
+                    canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+
+                    canvasSlot.style.gridColumnStart = (x + 1).toString()
+                    canvasSlot.style.gridColumnEnd = (x + 2).toString()
+                    canvasSlot.style.gridRowStart = (y + 1).toString()
+                    canvasSlot.style.gridRowEnd = (y + 2).toString()
+                    canvasSlot.style.minWidth = width.toString() + "px"
+                    canvasSlot.style.minHeight = height.toString() + "px"
+                    canvasSlot.style.margin = "0px"
+                    canvasSlot.style.backgroundColor = "rgba(210, 210, 210, 0.5)"
+
+                    puzzleCanvas.appendChild(canvasSlot)
+                    this.canvasSlotsDOM.push(canvasSlot)
+                }
+            }
+
+            parentElement.appendChild(puzzleCanvas)
+            this.canvas = puzzleCanvas
+            this.canvasParentDOM = parentElement
+        }
+        
+    }
+
+    createTray(parentElement, numRows, numCols, gapSize, orderMap) {
+        this.trayGapSize = gapSize
+        this.createTrayHelper(parentElement, numRows, numCols, orderMap)
+    }
+
+    createMatchingCanvas(parentElement, slotsArray) {
+
+        let windowWidth = parentElement.clientWidth
+
+        this.canvasParentWidth = windowWidth
+
+        const img_element = new Image()
+        img_element.setAttribute("id", "testPuzzleImage")
+        img_element.setAttribute("src", this.backgroundImgURL)
+        img_element.onload = () => {
+
+            const imgWidth = img_element.naturalWidth
+            const imgHeight = img_element.naturalHeight
+
+            this.backgroundImgWidth = imgWidth
+            this.backgroundImgHeight = imgHeight
+
+            const width = Math.floor(imgWidth * (windowWidth / imgWidth))
+            const height = Math.floor(imgHeight * (windowWidth / imgWidth))
+
+            let matchingCanvas = document.createElement('div')
+            matchingCanvas.setAttribute("class", "puzzleMatchingCanvas")
+            matchingCanvas.style.backgroundSize = "100% 100%"
+            matchingCanvas.style.width = width.toString() + "px"
+            matchingCanvas.style.height = height.toString() + "px"
+
+            if (this.backgroundImgURL != null) {
+                matchingCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
+            }
+
+            parentElement.appendChild(matchingCanvas)
+            this.canvas = matchingCanvas
+            this.canvasParentDOM = parentElement
+
+            for (let i = 0; i < slotsArray.length; i++) {
+
+                let newID = this.canvasSlots.length
+
                 let canvasSlot = document.createElement('div')
                 canvasSlot.setAttribute("id", "slot_" + newID.toString())
-                // canvasSlot.setAttribute("ondrop", "drop(event)")
-                // canvasSlot.setAttribute("ondragover", "allowDrop(event)")
                 canvasSlot.ondrop = () => { this.drop(event) }
                 canvasSlot.ondragover = () => { this.allowDrop(event) }
                 canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
-                canvasSlot.style.gridColumnStart = (x + 1).toString()
-                canvasSlot.style.gridColumnEnd = (x + 2).toString()
-                canvasSlot.style.gridRowStart = (y + 1).toString()
-                canvasSlot.style.gridRowEnd = (y + 2).toString()
-                // canvasSlot.style.maxHeight = "100%"
-                // canvasSlot.style.maxWidth = "100%"
-                // console.log("this is the width", (Math.floor(width / this.numCols)))
-                canvasSlot.style.minWidth = (Math.floor(width / this.numCols)).toString() + "px"
-                canvasSlot.style.minHeight = (Math.floor(height / this.numRows)).toString() + "px"
-                canvasSlot.style.margin = "0px"
+                canvasSlot.style.position = "relative"
+                canvasSlot.style.float = "left"
+                canvasSlot.style.top = slotsArray[i].top
+                canvasSlot.style.left = slotsArray[i].left
+                canvasSlot.style.width = slotsArray[i].width
+                canvasSlot.style.height = slotsArray[i].height
                 canvasSlot.style.backgroundColor = "rgba(210, 210, 210, 0.5)"
 
-                puzzleCanvas.appendChild(canvasSlot)
-                this.canvasSlotsDOM.push(canvasSlot)
+                let slot = new Slot(newID, slotsArray[i].left, slotsArray[i].top, slotsArray[i].left + slotsArray[i].width, slotsArray[i].top + slotsArray[i].height)
+                this.canvasSlots.push(slot)
+
+                this.canvas.appendChild(canvasSlot)
             }
         }
-
-        parentElement.appendChild(puzzleCanvas)
-        this.canvas = puzzleCanvas
-        this.canvasParentDOM = parentElement
-    }
-
-    createTray(parentElement, numRows, numCols, orderMap) {
-        this.createTrayHelper(parentElement, numRows, numCols, orderMap)
-    }
-
-    createMatchingCanvas(parentElement) {
-
-        let height = parentElement.clientHeight
-        let width = parentElement.clientWidth
-
-        let matchingCanvas = document.createElement('div')
-        matchingCanvas.setAttribute("class", "puzzleMatchingCanvas")
-        matchingCanvas.style.backgroundSize = "100% 100%"
-
-        if (this.backgroundImgURL != null) {
-            matchingCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
-        }
-
-        parentElement.appendChild(matchingCanvas)
-        this.canvas = matchingCanvas
-        this.canvasParentDOM = parentElement
-    }
-
-    createMatchingCanvasSlot(top, left, height, width) {
-
-        let newID = this.canvasSlots.length
-
-        let canvasSlot = document.createElement('div')
-        canvasSlot.setAttribute("id", "slot_" + newID.toString())
-        canvasSlot.ondrop = () => { this.drop(event) }
-        canvasSlot.ondragover = () => { this.allowDrop(event) }
-        canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
-
-        canvasSlot.style.position = "relative"
-        canvasSlot.style.top = top
-        canvasSlot.style.left = left
-        canvasSlot.style.width = width
-        canvasSlot.style.height = height
-        canvasSlot.style.backgroundColor = "rgba(210, 210, 210, 0.5)"
-
-        let slot = new Slot(newID, left, top, left + width, top + height)
-        this.canvasSlots.push(slot)
-
-        this.canvas.appendChild(canvasSlot)
         
-        return newID
     }
+
+    // createMatchingCanvasSlot(top, left, height, width) {
+
+    //     let newID = this.canvasSlots.length
+
+    //     let canvasSlot = document.createElement('div')
+    //     canvasSlot.setAttribute("id", "slot_" + newID.toString())
+    //     canvasSlot.ondrop = () => { this.drop(event) }
+    //     canvasSlot.ondragover = () => { this.allowDrop(event) }
+    //     canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+
+    //     canvasSlot.style.position = "relative"
+    //     canvasSlot.style.top = top
+    //     canvasSlot.style.left = left
+    //     canvasSlot.style.width = width
+    //     canvasSlot.style.height = height
+    //     canvasSlot.style.backgroundColor = "rgba(210, 210, 210, 0.5)"
+
+    //     let slot = new Slot(newID, left, top, left + width, top + height)
+    //     this.canvasSlots.push(slot)
+
+    //     this.canvas.appendChild(canvasSlot)
+        
+    //     return newID
+    // }
 
     createMatchings(slotArray, imgURLArray) {
 
@@ -206,7 +270,7 @@ class imagePuzzle {
 
     displayMatchingTray(tNumRows, tNumCols, orderMap, pHeight, pWidth) {
 
-        imgArray = []
+        let imgArray = []
         for (let i = 0; i < this.pieces.length; i++) {
             let image = document.createElement('img')
             image.setAttribute("src", this.pieces[i].imgURL)
@@ -225,6 +289,9 @@ class imagePuzzle {
         for (let y = 0; y < tNumRows; ++y) {
             for (let x = 0; x < tNumCols; ++x) {
 
+                // console.log("look at me", pHeight)
+                // console.log("look at yo", pWidth)
+
                 let newID = y * tNumCols + x
                 console.log("slotIDs!", newID)
 
@@ -240,8 +307,8 @@ class imagePuzzle {
                 slot.style.gridRowEnd = (y + 2).toString()
                 slot.style.maxHeight = "100%"
                 slot.style.maxWidth = "100%"
-                slot.style.minHeight = (Math.floor(pHeight / tNumRows)).toString() + "px"
                 slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
+                slot.style.minHeight = (Math.floor(pWidth / (3 * tNumCols))).toString() + "px"
                 slot.style.margin = "0px"
                 slot.style.backgroundColor = "grey"
 
@@ -285,7 +352,6 @@ class imagePuzzle {
 
                     canvas.setAttribute("id", "piece_" + newID.toString())
                     canvas.setAttribute("draggable", "true")
-                    // canvas.setAttribute("ondragstart", "drag(event)")
                     canvas.ondragstart = () => { this.drag(event) }
                     puzzlePiecesArr.push(canvas)
                     this.piecesDOM.push(canvas)
@@ -298,11 +364,11 @@ class imagePuzzle {
     }
 
     displayGridTray(piecesTray, puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap) {
-    
-        // const piecesTray = document.querySelector(".piecesTray")
-        // const puzzleCanvas = document.querySelector(".puzzleCanvas")
 
         console.log(puzzlePiecesArr)
+
+        const width = Math.floor((this.imgWidth / cNumCols) * (this.canvasParentWidth / this.imgWidth) - (this.trayGapSize * (tNumCols - 1)))
+        const height = Math.floor((this.imgHeight / cNumRows) * (this.canvasParentWidth / this.imgWidth) - (this.trayGapSize * (tNumRows - 1)))
     
         // pieces tray slots
         for (let y = 0; y < tNumRows; ++y) {
@@ -313,8 +379,6 @@ class imagePuzzle {
 
                 let slot = document.createElement('div')
                 slot.setAttribute("id", "tray_" + newID.toString())
-                // slot.setAttribute("ondrop", "drop(event)")
-                // slot.setAttribute("ondragover", "allowDrop(event)")
                 slot.ondrop = () => { this.drop(event) }
                 slot.ondragover = () => { this.allowDrop(event) }
                 slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
@@ -325,8 +389,8 @@ class imagePuzzle {
                 slot.style.gridRowEnd = (y + 2).toString()
                 slot.style.maxHeight = "100%"
                 slot.style.maxWidth = "100%"
-                slot.style.minHeight = (Math.floor(pHeight / tNumRows)).toString() + "px"
-                slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
+                slot.style.minHeight = height.toString() + "px"
+                slot.style.minWidth = width.toString() + "px"
                 slot.style.margin = "0px"
                 slot.style.backgroundColor = "grey"
 
@@ -341,6 +405,7 @@ class imagePuzzle {
     }    
 
     checkPieceCorrectness(event) {
+
         const target_slot = event.target
         const target_slot_id = parseInt(target_slot.id.substring(5), 10)
 
@@ -366,7 +431,6 @@ class imagePuzzle {
 
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i].correct === false) {
-                // console.log("incomplete!")
                 this.completed = false
                 puzzleCompleted = false
             }
@@ -393,17 +457,18 @@ class imagePuzzle {
     }
     
     drop(event) {
+
         console.log("dropping")
         event.preventDefault()
         let data = event.dataTransfer.getData("text")
-        // console.log("data:", data)
         let element = null
+
         for (let i = 0; i < this.piecesDOM.length; i++) {
-            // console.log("pieces:", this.piecesDOM[i].id)
             if (this.piecesDOM[i].id === data) {
                 element = this.piecesDOM[i]
             }
         }
+
         if (element !== null) {
             console.log("dropped!")
             event.target.appendChild(element)

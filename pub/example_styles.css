@@ -1,11 +1,12 @@
 #canvasContainer1 {
-    min-width: 200px;
-    min-height: 500px;
+    /* min-width: 200px;
+    min-height: 500px; */
+    max-width: 80%;
 }
 
 #trayContainer1 {
-    width: 50%;
-    min-height: 100px;
+    max-width: 100%;
+    /* min-height: 100px; */
 }
 
 #canvasContainer2 {
