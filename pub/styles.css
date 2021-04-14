@@ -9,7 +9,7 @@
     /* margin = "55px 15px 15px 15px" */
     border: 2px solid;
     display: grid;
-    gap: 10px;
+    gap: 4px;
 }
 
 .piecesTray {
@@ -23,5 +23,5 @@
     display: grid;
     /* grid-template-columns: repeat(1, 1fr); */
     /* grid-template-rows: repeat(" + (numRows * numCols).toString() + ", 1fr) */
-    gap: 10px;
+    gap: 4px;
 }

@@ -2,8 +2,11 @@
 "use strict"
 console.log("examples!")
 
-const canvasContainer = document.querySelector('#canvasContainer')
-const trayContainer = document.querySelector('#trayContainer')
+const canvasContainer1 = document.querySelector('#canvasContainer1')
+const trayContainer1 = document.querySelector('#trayContainer1')
+
+const canvasContainer2 = document.querySelector('#canvasContainer2')
+const trayContainer2 = document.querySelector('#trayContainer2')
 
 const orderMap = [
     [0, 1, 2],
@@ -13,9 +16,17 @@ const orderMap = [
 
 const puzzle1 = new imagePuzzle("grid")
 puzzle1.bindImage("./test_img.jpg")
-puzzle1.setDimensions(3, 3)
-puzzle1.createCanvas(canvasContainer)
-puzzle1.createTray(trayContainer, 3, 3, orderMap)
+// puzzle1.bindBackgroundImage("./test_img.jpg")
+puzzle1.setGridDimensions(3, 3)
+puzzle1.createGridCanvas(canvasContainer1)
+puzzle1.createTray(trayContainer1, 3, 3, orderMap)
+
+const puzzle2 = new imagePuzzle("grid")
+puzzle2.bindImage("./rapture.jpg")
+// puzzle1.bindBackgroundImage("./test_img.jpg")
+puzzle2.setGridDimensions(3, 3)
+puzzle2.createGridCanvas(canvasContainer2)
+puzzle2.createTray(trayContainer2, 3, 3, orderMap)
 
 // const openbutton = document.querySelector('#open_puzzle1')
 // openbutton.setAttribute('onClick', 'helper()')

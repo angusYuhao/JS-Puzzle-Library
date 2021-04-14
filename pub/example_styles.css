@@ -1,9 +1,19 @@
-#canvasContainer {
+#canvasContainer1 {
     min-width: 200px;
     min-height: 500px;
 }
 
-#trayContainer {
+#trayContainer1 {
+    width: 50%;
+    min-height: 100px;
+}
+
+#canvasContainer2 {
+    min-width: 200px;
+    min-height: 500px;
+}
+
+#trayContainer2 {
     width: 50%;
     min-height: 100px;
 }
