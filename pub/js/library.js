@@ -13,14 +13,17 @@ class imagePuzzle {
         }
 
         this.type = puzzleType
+        // class Piece object array
         this.pieces = []
+        // class Slot object array
         this.canvasSlots = []
+        // DOM arrays
         this.piecesDOM = []
         this.canvasSlotsDOM = []
         this.traySlotsDOM = []
         this.canvasParentDOM = null
         this.trayParentDOM = null
-        // this.puzzleWindow = null
+        // Others
         this.imgURL = null
         this.backgroundImgURL = null
         this.canvas = null
@@ -65,7 +68,7 @@ class imagePuzzle {
         let width = parentElement.clientWidth
 
         let puzzleCanvas = document.createElement('div')
-        puzzleCanvas.setAttribute("class", "puzzleCanvas")
+        puzzleCanvas.setAttribute("class", "puzzleGridCanvas")
         puzzleCanvas.style.gridTemplateRows = "repeat(" + (this.numRows).toString() + ", 1fr)"
         puzzleCanvas.style.gridTemplateColumns = "repeat(" + (this.numCols).toString() + ", 1fr)"
         puzzleCanvas.style.backgroundSize = "100% 100%"
@@ -75,10 +78,10 @@ class imagePuzzle {
         }
 
         // create the slots
-        for (let x = 0; x < this.numCols; ++x) {
-            for (let y = 0; y < this.numRows; ++y) {
+        for (let y = 0; y < this.numRows; ++y) {
+            for (let x = 0; x < this.numCols; ++x) {
 
-                let newID = x * this.numRows + y
+                let newID = y * this.numCols + x
                 console.log("slotIDs", newID)
 
                 // create slot in object array
@@ -86,7 +89,7 @@ class imagePuzzle {
                 this.canvasSlots.push(slot)
 
                 // create piece in object array
-                let piece = new Piece(newID)
+                let piece = new Piece(newID, newID, null)
                 this.pieces.push(piece)
 
                 // create slot in DOM
@@ -121,10 +124,59 @@ class imagePuzzle {
     }
 
     createTray(parentElement, numRows, numCols, orderMap) {
-        this.createTrayHelper(parentElement, numRows, numCols, orderMap, this.cutImage)
+        this.createTrayHelper(parentElement, numRows, numCols, orderMap)
     }
 
+    createMatchingCanvas(parentElement) {
 
+        let height = parentElement.clientHeight
+        let width = parentElement.clientWidth
+
+        let matchingCanvas = document.createElement('div')
+        matchingCanvas.setAttribute("class", "puzzleMatchingCanvas")
+        matchingCanvas.style.backgroundSize = "100% 100%"
+
+        if (this.backgroundImgURL != null) {
+            matchingCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
+        }
+
+        parentElement.appendChild(matchingCanvas)
+        this.canvas = matchingCanvas
+        this.canvasParentDOM = parentElement
+    }
+
+    createMatchingCanvasSlot(top, left, height, width) {
+
+        let newID = this.canvasSlots.length
+
+        let canvasSlot = document.createElement('div')
+        canvasSlot.setAttribute("id", "slot_" + newID.toString())
+        canvasSlot.ondrop = () => { this.drop(event) }
+        canvasSlot.ondragover = () => { this.allowDrop(event) }
+        canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+
+        canvasSlot.style.position = "relative"
+        canvasSlot.style.top = top
+        canvasSlot.style.left = left
+        canvasSlot.style.width = width
+        canvasSlot.style.height = height
+        canvasSlot.style.backgroundColor = "rgba(210, 210, 210, 0.5)"
+
+        let slot = new Slot(newID, left, top, left + width, top + height)
+        this.canvasSlots.push(slot)
+
+        this.canvas.appendChild(canvasSlot)
+        
+        return newID
+    }
+
+    createMatchings(slotArray, imgURLArray) {
+
+        for (let i = 0; i < slotArray.length; i++) {
+            let piece = new Piece(i, slotArray[i], imgURLArray[i])
+            this.pieces.push(piece)
+        }
+    }
 
 
     // =============================================== //
@@ -132,7 +184,7 @@ class imagePuzzle {
     // =============================================== //
 
     // create the pieces tray, orderMap takes in 2D array
-    createTrayHelper(parentElement, numRows, numCols, orderMap, callback) {
+    createTrayHelper(parentElement, numRows, numCols, orderMap) {
 
         // create the pieces tray for the puzzle pieces
         let piecesTray = document.createElement('div')
@@ -144,10 +196,60 @@ class imagePuzzle {
         this.tray = piecesTray
         this.trayParentDOM = parentElement
 
-        this.cutImage(piecesTray, this.imgURL, this.numRows, this.numCols, numRows, numCols, orderMap, parentElement.clientHeight, parentElement.clientWidth, this.displayTray)
+        if (this.type === "grid") {
+            this.cutImage(piecesTray, this.imgURL, this.numRows, this.numCols, numRows, numCols, orderMap, parentElement.clientHeight, parentElement.clientWidth)
+        }
+        else {
+            this.displayMatchingTray(numRows, numCols, orderMap, parentElement.clientHeight, parentElement.clientWidth)
+        }
     }
 
-    cutImage(piecesTray, imgURL, cNumRows, cNumCols, tNumRows, tNumCols, orderMap, pHeight, pWidth, callback) {
+    displayMatchingTray(numRows, numCols, orderMap, pHeight, pWidth) {
+
+        imgArray = []
+        for (let i = 0; i < this.pieces.length; i++) {
+            let image = document.createElement('img')
+            image.setAttribute("src", this.pieces[i].imgURL)
+
+            imgArray.push(image)
+        }
+
+        // for (let y = 0; y < this.numRows; ++y) {
+        //     for (let x = 0; x < this.numCols; ++x) {
+
+        //         let newID = x * tNumRows + y
+        //         console.log("slotIDs", newID)
+
+        //         let slot = document.createElement('div')
+        //         slot.setAttribute("id", "tray_" + newID.toString())
+        //         // slot.setAttribute("ondrop", "drop(event)")
+        //         // slot.setAttribute("ondragover", "allowDrop(event)")
+        //         slot.ondrop = () => { this.drop(event) }
+        //         slot.ondragover = () => { this.allowDrop(event) }
+        //         slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+
+        //         slot.style.gridColumnStart = (x + 1).toString()
+        //         slot.style.gridColumnEnd = (x + 2).toString()
+        //         slot.style.gridRowStart = (y + 1).toString()
+        //         slot.style.gridRowEnd = (y + 2).toString()
+        //         slot.style.maxHeight = "100%"
+        //         slot.style.maxWidth = "100%"
+        //         slot.style.minHeight = (Math.floor(pHeight / tNumRows)).toString() + "px"
+        //         slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
+        //         slot.style.margin = "0px"
+        //         slot.style.backgroundColor = "grey"
+
+        //         puzzlePiecesArr[orderMap[(x * tNumRows + y)%cNumCols][Math.floor((x * tNumRows + y)/cNumCols)]].style.height = "100%"
+        //         puzzlePiecesArr[orderMap[(x * tNumRows + y)%cNumCols][Math.floor((x * tNumRows + y)/cNumCols)]].style.width = "100%"
+
+        //         slot.appendChild(puzzlePiecesArr[orderMap[(x * tNumRows + y)%cNumCols][Math.floor((x * tNumRows + y)/cNumCols)]])
+        //         piecesTray.appendChild(slot)
+        //         this.traySlotsDOM.push(slot)
+        //     }
+        // }
+    }
+
+    cutImage(piecesTray, imgURL, cNumRows, cNumCols, tNumRows, tNumCols, orderMap, pHeight, pWidth) {
 
         const img_element = new Image()
         img_element.setAttribute("id", "puzzle_image")
@@ -162,8 +264,8 @@ class imagePuzzle {
             // image.setAttribute("crossOrigin", "anonymous")
     
             let puzzlePiecesArr = []
-            for (let x = 0; x < cNumCols; ++x) {
-                for (let y = 0; y < cNumRows; ++y) {
+            for (let y = 0; y < this.numRows; ++y) {
+                for (let x = 0; x < this.numCols; ++x) {
 
                     let canvas = document.createElement('canvas')
                     canvas.width = width
@@ -172,7 +274,7 @@ class imagePuzzle {
                     let context = canvas.getContext('2d')
                     context.drawImage(image, x * width, y * height, width, height, 0, 0, canvas.width, canvas.height)
                     
-                    let newID = x * cNumRows + y
+                    let newID = y * cNumCols + x
                     console.log("piece_ids", newID)
 
                     canvas.setAttribute("id", "piece_" + newID.toString())
@@ -184,12 +286,12 @@ class imagePuzzle {
                 }
             }
             
-            this.displayTray(piecesTray, puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap)
+            this.displayGridTray(piecesTray, puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap)
     
         }
     }
 
-    displayTray(piecesTray, puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap) {
+    displayGridTray(piecesTray, puzzlePiecesArr, cNumCols, cNumRows, tNumCols, tNumRows, pHeight, pWidth, orderMap) {
     
         // const piecesTray = document.querySelector(".piecesTray")
         // const puzzleCanvas = document.querySelector(".puzzleCanvas")
@@ -197,11 +299,11 @@ class imagePuzzle {
         console.log(puzzlePiecesArr)
     
         // pieces tray slots
-        for (let x = 0; x < tNumCols; ++x) {
-            for (let y = 0; y < tNumRows; ++y) {
+        for (let y = 0; y < tNumRows; ++y) {
+            for (let x = 0; x < tNumCols; ++x) {
 
-                let newID = x * cNumRows + y
-                console.log("slotIDs", newID)
+                let newID = y * tNumCols + x
+                console.log("slotIDs!", newID)
 
                 let slot = document.createElement('div')
                 slot.setAttribute("id", "tray_" + newID.toString())
@@ -249,7 +351,7 @@ class imagePuzzle {
 
         if (piece_info === null) { console.log("not found") }
         else if (target_slot.id.substring(0, 4) === "tray") { piece_info.correct = false }
-        else if (child_piece_id === target_slot_id) { piece_info.correct = true }
+        else if (piece_info.linked_slot === target_slot_id) { piece_info.correct = true }
         else { piece_info.correct = false }
         
         console.log(piece_info.correct)
@@ -258,7 +360,7 @@ class imagePuzzle {
 
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i].correct === false) {
-                console.log("incomplete!")
+                // console.log("incomplete!")
                 this.completed = false
                 puzzleCompleted = false
             }
@@ -275,35 +377,35 @@ class imagePuzzle {
         parentElement.dispatchEvent(updateEvent)
     }
 
-    checkComplete() {
+    // checkComplete() {
 
-        let parent = document.querySelector('.puzzleWindow')
-        let status = document.querySelector('.status')
+    //     let parent = document.querySelector('.puzzleWindow')
+    //     let status = document.querySelector('.status')
 
-        parent.removeChild(status)
+    //     parent.removeChild(status)
 
-        for (let i = 0; i < this.pieces.length; ++i) {
-            if (this.pieces[i].correct === false) {
-                console.log("incomplete!")
-                status.innerHTML = "Incorrect!"
-                status.style.color = "red"
+    //     for (let i = 0; i < this.pieces.length; ++i) {
+    //         if (this.pieces[i].correct === false) {
+    //             console.log("incomplete!")
+    //             status.innerHTML = "Incorrect!"
+    //             status.style.color = "red"
 
-                parent.appendChild(status)
-                this.completed = false
-                return false
-            }
-        }
-        console.log("complete!")
-        status.innerHTML = "Correct!"
-        status.style.color = "green"
-        parent.appendChild(status)
-        this.completed = true
-        return true
-    }
+    //             parent.appendChild(status)
+    //             this.completed = false
+    //             return false
+    //         }
+    //     }
+    //     console.log("complete!")
+    //     status.innerHTML = "Correct!"
+    //     status.style.color = "green"
+    //     parent.appendChild(status)
+    //     this.completed = true
+    //     return true
+    // }
 
-    checkIfCompleted() {
-        return this.completed
-    }
+    // checkIfCompleted() {
+    //     return this.completed
+    // }
 
     drag(event) {
         console.log("draging")
@@ -338,9 +440,10 @@ class imagePuzzle {
 }
 
 class Piece {
-    constructor(piece_id) {
+    constructor(piece_id, linked_slot, imgURL) {
         this.piece_id = piece_id
-        // this.linked_slot = null
+        this.linked_slot = linked_slot
+        this.imgURL = imgURL
         this.correct = false
     }
 }
