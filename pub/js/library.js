@@ -23,6 +23,7 @@
             // DOM arrays
             this.piecesDOM = []
             this.backCanvasDOM = null
+            this.backTrayDOM = null
             this.canvasSlotsDOM = []
             this.traySlotsDOM = []
             this.canvasParentDOM = null
@@ -144,7 +145,7 @@
                         canvasSlot.setAttribute("id", "slot_" + newID.toString())
                         canvasSlot.ondrop = () => { this.drop(event) }
                         canvasSlot.ondragover = () => { this.allowDrop(event) }
-                        canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+                        // canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
                         canvasSlot.style.gridColumnStart = (x + 1).toString()
                         canvasSlot.style.gridColumnEnd = (x + 2).toString()
@@ -223,7 +224,7 @@
                     canvasSlot.setAttribute("id", "slot_" + newID.toString())
                     canvasSlot.ondrop = () => { this.drop(event) }
                     canvasSlot.ondragover = () => { this.allowDrop(event) }
-                    canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+                    // canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
                     canvasSlot.style.top = slotsArray[i].top
                     canvasSlot.style.left = slotsArray[i].left
@@ -236,6 +237,7 @@
                     this.canvasSlots.push(slot)
 
                     matchingCanvas.appendChild(canvasSlot)
+                    this.canvasSlotsDOM.push(canvasSlot)
                 }
 
                 backCanvas.appendChild(titleBar)
@@ -256,10 +258,10 @@
             }
         }
         
-        createTray(parentElement, numRows, numCols, orderMap, gapSize=4, slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
+        createTray(parentElement, numRows, numCols, orderMap, gapSize=4, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
             this.trayGapSize = gapSize
             this.trayParentWidth = parentElement.clientWidth
-            this.createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius)
+            this.createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor)
         }
 
 
@@ -268,7 +270,21 @@
         // =============================================== //
 
         // create the pieces tray, orderMap takes in 2D array
-        createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius) {
+        createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor) {
+
+            // create the backTray
+            let backTray = document.createElement('div')
+            backTray.setAttribute("class", "backCanvas")
+            backTray.style.backgroundColor = backgroundColor
+            backTray.style.borderRadius = trayBorderRadius
+
+            // create the titleBar
+            let titleBar = document.createElement('div')
+            titleBar.setAttribute("class", "canvasTitleBar")
+            titleBar.innerHTML = titleText
+            titleBar.style.color = titleTextColor
+            titleBar.style.backgroundColor = titleBarColor
+            titleBar.style.borderRadius = trayBorderRadius + " " + trayBorderRadius + " 0%" + " 0%"
 
             // create the pieces tray for the puzzle pieces
             let piecesTray = document.createElement('div')
@@ -278,8 +294,11 @@
             piecesTray.style.backgroundColor = backgroundColor
             piecesTray.style.borderRadius = trayBorderRadius
 
-            parentElement.appendChild(piecesTray)
+            backTray.appendChild(titleBar)
+            backTray.appendChild(piecesTray)
+            parentElement.appendChild(backTray)
             this.tray = piecesTray
+            this.backTrayDOM = backTray
             this.trayParentDOM = parentElement
 
             if (this.type === "grid") {
@@ -320,7 +339,7 @@
                     slot.setAttribute("id", "tray_" + newID.toString())
                     slot.ondrop = () => { this.drop(event) }
                     slot.ondragover = () => { this.allowDrop(event) }
-                    slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+                    // slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
                     slot.style.gridColumnStart = (x + 1).toString()
                     slot.style.gridColumnEnd = (x + 2).toString()
@@ -416,7 +435,7 @@
                     slot.setAttribute("id", "tray_" + newID.toString())
                     slot.ondrop = () => { this.drop(event) }
                     slot.ondragover = () => { this.allowDrop(event) }
-                    slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+                    // slot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
 
                     slot.style.gridColumnStart = (x + 1).toString()
                     slot.style.gridColumnEnd = (x + 2).toString()
@@ -441,6 +460,8 @@
 
             const target_slot = event.target
             const target_slot_id = parseInt(target_slot.id.substring(5), 10)
+
+            // console.log("check", target_slot)
 
             const child_piece = target_slot.firstElementChild
             const child_piece_id = parseInt(child_piece.id.substring(6), 10)
@@ -474,7 +495,52 @@
             const parentElement = this.canvasParentDOM
 
             const updateEvent = new CustomEvent('puzzleUpdated', { 
-                detail: { pieceStatus: piece_info.correct, puzzleStatus: this.completed } 
+                detail: { pieceStatus: piece_info.correct, puzzleStatus: this.completed, targetSlotID: target_slot_id, action: "drop" } 
+            })
+
+            parentElement.dispatchEvent(updateEvent)
+        }
+
+        checkSwitchPieceCorrectness(element, sequence) {
+
+            const target_slot = element
+            const target_slot_id = parseInt(target_slot.id.substring(5), 10)
+
+            // console.log("check", target_slot)
+
+            const child_piece = target_slot.firstElementChild
+            const child_piece_id = parseInt(child_piece.id.substring(6), 10)
+
+            let piece_info = null
+
+            for (let i = 0; i < this.pieces.length; ++i) {
+                if (this.pieces[i].piece_id === child_piece_id) {
+                    piece_info = this.pieces[i]
+                }
+            }
+
+            if (piece_info === null) { console.log("not found") }
+            else if (target_slot.id.substring(0, 4) === "tray") { piece_info.correct = false }
+            else if (piece_info.linked_slot === target_slot_id) { piece_info.correct = true }
+            else { piece_info.correct = false }
+            
+            console.log(piece_info.correct)
+
+            let puzzleCompleted = true
+
+            for (let i = 0; i < this.pieces.length; ++i) {
+                if (this.pieces[i].correct === false) {
+                    this.completed = false
+                    puzzleCompleted = false
+                }
+            }
+
+            if (puzzleCompleted) { this.completed = true }
+
+            const parentElement = this.canvasParentDOM
+
+            const updateEvent = new CustomEvent('puzzleUpdated', { 
+                detail: { pieceStatus: piece_info.correct, puzzleStatus: this.completed, targetSlotID: target_slot_id, action: "switch" + sequence.toString() } 
             })
 
             parentElement.dispatchEvent(updateEvent)
@@ -482,7 +548,9 @@
 
         drag(event) {
             console.log("draging")
-            event.dataTransfer.setData("text", event.target.id);
+            // console.log("OGGGGGG", event.target.parentElement.id)
+            let dataHolder = { id: event.target.id, parent: event.target.parentElement.id }
+            event.dataTransfer.setData("text/plain", JSON.stringify(dataHolder));
         }
         
         allowDrop(event) {
@@ -493,18 +561,44 @@
 
             console.log("dropping")
             event.preventDefault()
-            let data = event.dataTransfer.getData("text")
+            let data = event.dataTransfer.getData("text/plain")
+            data = JSON.parse(data)
+            let id = data.id
+            let originalParentID = data.parent
+            let originalParent = null
+
+            // console.log("original parent:", originalParentID)
+
+            if (originalParentID.substring(0, 4) === "tray") {
+                originalParent = (this.traySlotsDOM.filter((traySlot) => traySlot.id === originalParentID))[0]
+                // console.log("here we go", originalParent)
+            }
+            else {
+                originalParent = (this.canvasSlotsDOM.filter((canvasSlot) => canvasSlot.id === originalParentID))[0]
+                // console.log("here we go", originalParent)
+            }
+
             let element = null
 
             for (let i = 0; i < this.piecesDOM.length; i++) {
-                if (this.piecesDOM[i].id === data) {
+                if (this.piecesDOM[i].id === id) {
                     element = this.piecesDOM[i]
                 }
             }
 
-            if (element !== null) {
+            if (element !== null && event.target.id.substring(0, 4) !== "tray" && event.target.id.substring(0, 4) !== "slot") {
+                console.log("switched!")
+                const targetParent = event.target.parentElement
+                targetParent.removeChild(event.target)
+                targetParent.appendChild(element)
+                originalParent.appendChild(event.target)
+                this.checkSwitchPieceCorrectness(targetParent, 1)
+                this.checkSwitchPieceCorrectness(originalParent, 2)
+            }
+            else if (element !== null) {
                 console.log("dropped!")
                 event.target.appendChild(element)
+                this.checkPieceCorrectness(event)
             }
             else {
                 console.log("cannot find piece, what is going on?")

@@ -13,68 +13,69 @@ const slotBorderRadius = "10px"
 
 // ==================================
 
-let orderMap = [
-    [0],
-    [1]
-]
+// let orderMap = [
+//     [0, 1]
+// ]
 
-let slots = [
-    { top: "50px", left: "50px", height: "100px", width: "100px"},
-    { top: "50px", left: "500px", height: "150px", width: "150px"}
-]
-
-canvasContainer1.addEventListener('puzzleUpdated', function (e) {
-    console.log("puzzle is completed:", e.detail.puzzleStatus)
-})
-
-let idArray = [0, 1]
-let imgArray = ["./rapture.jpg", "./test_img.jpg"]
-
-
-const puzzle3 = new ImagePuzzle("matching")
-puzzle3.bindBackgroundImage("./rapture.jpg")
-puzzle3.createMatchingCanvas(canvasContainer1, slots, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "red", slotBorderRadius)
-puzzle3.createMatchings(idArray, imgArray)
-puzzle3.createTray(trayContainer1, 2, 1, orderMap, 4, slotColor, slotBorderRadius, "green", slotBorderRadius)
-
-// ==================================
-
-// const orderMap1 = [
-//     [0, 1, 2, 3, 4, 5],
-//     [6, 7, 8, 9, 10, 11]
+// let slots = [
+//     { top: "50px", left: "50px", height: "100px", width: "100px"},
+//     { top: "50px", left: "500px", height: "150px", width: "150px"}
 // ]
 
 // canvasContainer1.addEventListener('puzzleUpdated', function (e) {
-//     console.log("puzzle1 is completed:", e.detail.puzzleStatus)
+//     console.log("puzzle is completed:", e.detail.puzzleStatus)
 // })
 
-// const puzzle1 = new ImagePuzzle("grid")
-// puzzle1.bindImage("./test_img.jpg")
-// puzzle1.bindBackgroundImage("./reddit.png")
-// puzzle1.setGridDimensions(3, 4, 4)
-// // puzzle1.createGridCanvasContainer(canvasContainer1, "title is here", "blue")
-// puzzle1.createGridCanvas(canvasContainer1, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "yellow", slotBorderRadius)
-// puzzle1.createTray(trayContainer1, 2, 6, orderMap1, 4, slotColor, slotBorderRadius, "green", slotBorderRadius)
+// let idArray = [0, 1]
+// let imgArray = ["./rapture.jpg", "./test_img.jpg"]
+
+
+// const puzzle3 = new ImagePuzzle("matching")
+// puzzle3.bindBackgroundImage("./rapture.jpg")
+// puzzle3.createMatchingCanvas(canvasContainer1, slots, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "red", slotBorderRadius)
+// puzzle3.createMatchings(idArray, imgArray)
+// puzzle3.createTray(trayContainer1, 1, 2, orderMap, 4, "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
 
 // ==================================
 
-// const orderMap2 = [
-//     [0, 1, 2],
-//     [3, 4, 5],
-//     [6, 7, 8]
-// ]
+const orderMap1 = [
+    [0, 1, 2, 3, 4, 5],
+    [6, 7, 8, 9, 10, 11]
+]
 
-// canvasContainer2.addEventListener('puzzleUpdated', function (e) {
-//     console.log("puzzle2 is completed:", e.detail.puzzleStatus)
-// })
+canvasContainer1.addEventListener('puzzleUpdated', function (e) {
+    console.log("action:", e.detail.action)
+    console.log("puzzle1 is completed:", e.detail.puzzleStatus)
+})
 
-// const puzzle2 = new ImagePuzzle("grid")
-// puzzle2.bindImage("./rapture.jpg")
-// // puzzle1.bindBackgroundImage("./test_img.jpg")
-// puzzle2.setGridDimensions(3, 3, 4)
-// // puzzle1.createGridCanvasContainer(canvasContainer2, "title is there", "red")
-// puzzle2.createGridCanvas(canvasContainer2, "cornflowerblue", "black", "this is title", slotColor, slotBorderRadius, "yellow", slotBorderRadius)
-// puzzle2.createTray(trayContainer2, 3, 3, orderMap2, 4, slotColor, slotBorderRadius, "green", slotBorderRadius)
+const puzzle1 = new ImagePuzzle("grid")
+puzzle1.bindImage("./test_img.jpg")
+puzzle1.bindBackgroundImage("./reddit.png")
+puzzle1.setGridDimensions(3, 4, 4)
+// puzzle1.createGridCanvasContainer(canvasContainer1, "title is here", "blue")
+puzzle1.createGridCanvas(canvasContainer1, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "yellow", slotBorderRadius)
+puzzle1.createTray(trayContainer1, 2, 6, orderMap1, 4, "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
+
+// ==================================
+
+const orderMap2 = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8]
+]
+
+canvasContainer2.addEventListener('puzzleUpdated', function (e) {
+    console.log("action:", e.detail.action)
+    console.log("puzzle2 is completed:", e.detail.puzzleStatus)
+})
+
+const puzzle2 = new ImagePuzzle("grid")
+puzzle2.bindImage("./rapture.jpg")
+// puzzle1.bindBackgroundImage("./test_img.jpg")
+puzzle2.setGridDimensions(3, 3, 4)
+// puzzle1.createGridCanvasContainer(canvasContainer2, "title is there", "red")
+puzzle2.createGridCanvas(canvasContainer2, "cornflowerblue", "black", "this is title", slotColor, slotBorderRadius, "yellow", slotBorderRadius)
+puzzle2.createTray(trayContainer2, 3, 3, orderMap2, 4, "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
 
 // ==================================
 
