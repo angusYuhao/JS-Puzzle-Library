@@ -22,12 +22,14 @@
             this.canvasSlots = []
             // DOM arrays
             this.piecesDOM = []
+            this.backCanvasDOM = null
             this.canvasSlotsDOM = []
             this.traySlotsDOM = []
             this.canvasParentDOM = null
             this.trayParentDOM = null
             // Others
             this.canvasParentWidth = null
+            this.trayParentWidth = null
             this.imgURL = null
             this.imgWidth = null
             this.imgHeight = null
@@ -61,8 +63,8 @@
             this.backgroundImgURL = imgURL
         }
 
-        // set the dimension for puzzle
-        setGridDimensions(numRows, numCols, gapSize) {
+        // set the dimension for grid puzzle
+        setGridDimensions(numRows, numCols, gapSize=4) {
             if (this.type !== "grid") {
                 return false
             }
@@ -73,22 +75,39 @@
         }
 
         // create the main canvas
-        createGridCanvas(parentElement, slotColor, slotBorderRadius) {
+        createGridCanvas(parentElement, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px") {
 
+            // get the parent's width and store it in object
             let windowWidth = parentElement.clientWidth
-
             this.canvasParentWidth = windowWidth
 
+            // create the backCanvas
+            let backCanvas = document.createElement('div')
+            backCanvas.setAttribute("class", "backCanvas")
+            backCanvas.style.backgroundColor = backgroundColor
+            backCanvas.style.borderRadius = canvasBorderRadius
+
+            // create the titleBar
+            let titleBar = document.createElement('div')
+            titleBar.setAttribute("class", "canvasTitleBar")
+            titleBar.innerHTML = titleText
+            titleBar.style.color = titleTextColor
+            titleBar.style.backgroundColor = titleBarColor
+            titleBar.style.borderRadius = canvasBorderRadius + " " + canvasBorderRadius + " 0%" + " 0%"
+
+            // create canvas DOM element
             let puzzleCanvas = document.createElement('div')
-            puzzleCanvas.setAttribute("class", "puzzleGridCanvas")
+            puzzleCanvas.setAttribute("class", "gridCanvas")
             puzzleCanvas.style.gridTemplateRows = "repeat(" + (this.numRows).toString() + ", 1fr)"
             puzzleCanvas.style.gridTemplateColumns = "repeat(" + (this.numCols).toString() + ", 1fr)"
-            // puzzleCanvas.style.backgroundSize = "100% 100%"
+            // puzzleCanvas.style.backgroundColor = backgroundColor
+            puzzleCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
 
             if (this.backgroundImgURL != null) {
                 puzzleCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
             }
 
+            // get image dimensions
             const img_element = new Image()
             img_element.setAttribute("id", "testPuzzleImage")
             img_element.setAttribute("src", this.imgURL)
@@ -103,10 +122,11 @@
                 const width = Math.floor((imgWidth / this.numCols) * (windowWidth / imgWidth) - (this.gridGapSize * (this.numCols - 1)))
                 const height = Math.floor((imgHeight / this.numRows) * (windowWidth / imgWidth) - (this.gridGapSize * (this.numRows - 1)))
 
-                // create the slots
+                // create the canvas slots
                 for (let y = 0; y < this.numRows; ++y) {
                     for (let x = 0; x < this.numCols; ++x) {
 
+                        // get the slot id
                         let newID = y * this.numCols + x
                         console.log("slotIDs", newID)
 
@@ -134,31 +154,41 @@
                         canvasSlot.style.minHeight = height.toString() + "px"
                         canvasSlot.style.backgroundColor = slotColor
                         canvasSlot.style.borderRadius = slotBorderRadius
-                        // canvasSlot.style.margin = "0px"
-                        // canvasSlot.style.backgroundColor = "rgba(210, 210, 210, 0.5)"
 
                         puzzleCanvas.appendChild(canvasSlot)
                         this.canvasSlotsDOM.push(canvasSlot)
+                        
                     }
                 }
 
-                parentElement.appendChild(puzzleCanvas)
+                backCanvas.appendChild(titleBar)
+                backCanvas.appendChild(puzzleCanvas)
+                parentElement.appendChild(backCanvas)
                 this.canvas = puzzleCanvas
+                this.backCanvasDOM = backCanvas
                 this.canvasParentDOM = parentElement
             }
             
         }
 
-        createTray(parentElement, numRows, numCols, gapSize, slotColor, slotBorderRadius, orderMap) {
-            this.trayGapSize = gapSize
-            this.createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap)
-        }
-
-        createMatchingCanvas(parentElement, slotsArray, slotColor, slotBorderRadius) {
+        createMatchingCanvas(parentElement, slotsArray, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px") {
 
             let windowWidth = parentElement.clientWidth
-
             this.canvasParentWidth = windowWidth
+
+            // create the backCanvas
+            let backCanvas = document.createElement('div')
+            backCanvas.setAttribute("class", "backCanvas")
+            backCanvas.style.backgroundColor = backgroundColor
+            backCanvas.style.borderRadius = canvasBorderRadius
+
+            // create the titleBar
+            let titleBar = document.createElement('div')
+            titleBar.setAttribute("class", "canvasTitleBar")
+            titleBar.innerHTML = titleText
+            titleBar.style.color = titleTextColor
+            titleBar.style.backgroundColor = titleBarColor
+            titleBar.style.borderRadius = canvasBorderRadius + " " + canvasBorderRadius + " 0%" + " 0%"
 
             const img_element = new Image()
             img_element.setAttribute("id", "testPuzzleImage")
@@ -175,17 +205,14 @@
                 const height = Math.floor(imgHeight * (windowWidth / imgWidth))
 
                 let matchingCanvas = document.createElement('div')
-                matchingCanvas.setAttribute("class", "puzzleMatchingCanvas")
-                matchingCanvas.style.width = width.toString() + "px"
+                matchingCanvas.setAttribute("class", "matchingCanvas")
+                // matchingCanvas.style.width = width.toString() + "px"
                 matchingCanvas.style.height = height.toString() + "px"
+                matchingCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
 
                 if (this.backgroundImgURL != null) {
                     matchingCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
                 }
-
-                parentElement.appendChild(matchingCanvas)
-                this.canvas = matchingCanvas
-                this.canvasParentDOM = parentElement
 
                 for (let i = 0; i < slotsArray.length; i++) {
 
@@ -208,8 +235,15 @@
                     let slot = new Slot(newID, slotsArray[i].left, slotsArray[i].top, slotsArray[i].left + slotsArray[i].width, slotsArray[i].top + slotsArray[i].height)
                     this.canvasSlots.push(slot)
 
-                    this.canvas.appendChild(canvasSlot)
+                    matchingCanvas.appendChild(canvasSlot)
                 }
+
+                backCanvas.appendChild(titleBar)
+                backCanvas.appendChild(matchingCanvas)
+                parentElement.appendChild(backCanvas)
+                this.canvas = matchingCanvas
+                this.backCanvasDOM = backCanvas
+                this.canvasParentDOM = parentElement
             }
             
         }
@@ -221,6 +255,12 @@
                 this.pieces.push(piece)
             }
         }
+        
+        createTray(parentElement, numRows, numCols, orderMap, gapSize=4, slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
+            this.trayGapSize = gapSize
+            this.trayParentWidth = parentElement.clientWidth
+            this.createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius)
+        }
 
 
         // =============================================== //
@@ -228,13 +268,15 @@
         // =============================================== //
 
         // create the pieces tray, orderMap takes in 2D array
-        createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap) {
+        createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius) {
 
             // create the pieces tray for the puzzle pieces
             let piecesTray = document.createElement('div')
             piecesTray.setAttribute("class", "piecesTray")
             piecesTray.style.gridTemplateRows = "repeat(" + (numRows).toString() + ", 1fr)"
             piecesTray.style.gridTemplateColumns = "repeat(" + (numCols).toString() + ", 1fr)"
+            piecesTray.style.backgroundColor = backgroundColor
+            piecesTray.style.borderRadius = trayBorderRadius
 
             parentElement.appendChild(piecesTray)
             this.tray = piecesTray
@@ -284,7 +326,7 @@
                     slot.style.gridColumnEnd = (x + 2).toString()
                     slot.style.gridRowStart = (y + 1).toString()
                     slot.style.gridRowEnd = (y + 2).toString()
-                    slot.style.minWidth = (Math.floor(pWidth / tNumCols)).toString() + "px"
+                    // slot.style.minWidth = (Math.floor((pWidth - (this.trayGapSize * (tNumCols - 1))) / tNumCols)).toString() + "px"
                     slot.style.minHeight = (Math.floor(pWidth / (3 * tNumCols))).toString() + "px"
                     slot.style.backgroundColor = slotColor
                     slot.style.borderRadius = slotBorderRadius
@@ -348,8 +390,19 @@
 
             console.log(puzzlePiecesArr)
 
-            const width = Math.floor((this.imgWidth / this.numCols) * (this.canvasParentWidth / this.imgWidth) - (this.trayGapSize * (tNumCols - 1)))
-            const height = Math.floor((this.imgHeight / this.numRows) * (this.canvasParentWidth / this.imgWidth) - (this.trayGapSize * (tNumRows - 1)))
+            const originalPieceWidth = (this.imgWidth / this.numCols)
+            const originalPieceHeight = (this.imgHeight / this.numRows)
+
+            const heightOverWidth = originalPieceHeight / originalPieceWidth
+
+            const trayPieceWidth = Math.floor((this.trayParentWidth - (this.trayGapSize * (tNumCols - 1))) / tNumCols)
+            const trayPieceHeight = Math.floor(heightOverWidth * (this.trayParentWidth - (this.trayGapSize * (tNumCols - 1))) / tNumCols)
+
+            console.log("hello book=====", this.trayParentWidth)
+            console.log("hello jack=====", trayPieceWidth)
+
+            // const width = Math.floor(originalPieceWidth * (this.canvasParentWidth / this.imgWidth) - (this.trayGapSize * (tNumCols - 1)))
+            // const height = Math.floor(originalPieceHeight * (this.canvasParentWidth / this.imgWidth) - (this.trayGapSize * (tNumRows - 1)))
         
             // pieces tray slots
             for (let y = 0; y < tNumRows; ++y) {
@@ -369,8 +422,8 @@
                     slot.style.gridColumnEnd = (x + 2).toString()
                     slot.style.gridRowStart = (y + 1).toString()
                     slot.style.gridRowEnd = (y + 2).toString()
-                    slot.style.minHeight = height.toString() + "px"
-                    slot.style.minWidth = width.toString() + "px"
+                    slot.style.minHeight = trayPieceHeight.toString() + "px"
+                    // slot.style.minWidth = trayPieceWidth.toString() + "px"
                     slot.style.backgroundColor = slotColor
                     slot.style.borderRadius = slotBorderRadius
 
