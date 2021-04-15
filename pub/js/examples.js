@@ -5,6 +5,12 @@ console.log("examples!")
 const canvasContainer1 = document.querySelector('#canvasContainer1')
 const trayContainer1 = document.querySelector('#trayContainer1')
 
+const canvasContainer2 = document.querySelector('#canvasContainer2')
+const trayContainer2 = document.querySelector('#trayContainer2')
+
+const slotColor = "rgba(200, 30, 250, 0.4)"
+const slotBorderRadius = "10px"
+
 // ==================================
 
 // let orderMap = [
@@ -24,46 +30,50 @@ const trayContainer1 = document.querySelector('#trayContainer1')
 // let imgArray = ["./rapture.jpg", "./test_img.jpg"]
 
 
-// const puzzle3 = new imagePuzzle("matching")
+// const puzzle3 = new ImagePuzzle("matching")
 // puzzle3.bindBackgroundImage("./test_img.jpg")
-// puzzle3.createMatchingCanvas(canvasContainer1, slots)
-// // let firstPiece = puzzle3.createMatchingCanvasSlot("50px", "50px", "40px", "40px")
-// // idArray.push(firstPiece)
-// // let secondPiece = puzzle3.createMatchingCanvasSlot("50px", "100px", "40px", "40px")
-// // idArray.push(secondPiece)
-
+// puzzle3.createMatchingCanvas(canvasContainer1, slots, slotColor, slotBorderRadius)
 // puzzle3.createMatchings(idArray, imgArray)
-// puzzle3.createTray(trayContainer1, 1, 2, 4, orderMap)
+// puzzle3.createTray(trayContainer1, 1, 2, 4, slotColor, slotBorderRadius, orderMap)
 
 // ==================================
 
-const canvasContainer2 = document.querySelector('#canvasContainer2')
-const trayContainer2 = document.querySelector('#trayContainer2')
-
-const orderMap = [
+const orderMap1 = [
     [0, 1, 2, 3, 4, 5],
     [6, 7, 8, 9, 10, 11]
 ]
 
 canvasContainer1.addEventListener('puzzleUpdated', function (e) {
-    console.log("puzzle is completed:", e.detail.puzzleStatus)
+    console.log("puzzle1 is completed:", e.detail.puzzleStatus)
 })
 
-const puzzle1 = new imagePuzzle("grid")
+const puzzle1 = new ImagePuzzle("grid")
 puzzle1.bindImage("./test_img.jpg")
 puzzle1.bindBackgroundImage("./reddit.png")
 puzzle1.setGridDimensions(3, 4, 4)
-puzzle1.createGridCanvas(canvasContainer1)
-puzzle1.createTray(trayContainer1, 2, 6, 4, orderMap)
+puzzle1.createGridCanvas(canvasContainer1, slotColor, slotBorderRadius)
+puzzle1.createTray(trayContainer1, 2, 6, 4, slotColor, slotBorderRadius, orderMap1)
 
 // ==================================
 
-// const puzzle2 = new imagePuzzle("grid")
-// puzzle2.bindImage("./rapture.jpg")
-// // puzzle1.bindBackgroundImage("./test_img.jpg")
-// puzzle2.setGridDimensions(3, 3)
-// puzzle2.createGridCanvas(canvasContainer2)
-// puzzle2.createTray(trayContainer2, 3, 3, orderMap)
+const orderMap2 = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8]
+]
+
+canvasContainer2.addEventListener('puzzleUpdated', function (e) {
+    console.log("puzzle2 is completed:", e.detail.puzzleStatus)
+})
+
+const puzzle2 = new ImagePuzzle("grid")
+puzzle2.bindImage("./rapture.jpg")
+// puzzle1.bindBackgroundImage("./test_img.jpg")
+puzzle2.setGridDimensions(3, 3, 4)
+puzzle2.createGridCanvas(canvasContainer2, slotColor, slotBorderRadius)
+puzzle2.createTray(trayContainer2, 3, 3, 4, slotColor, slotBorderRadius, orderMap2)
+
+// ==================================
 
 // const openbutton = document.querySelector('#open_puzzle1')
 // openbutton.setAttribute('onClick', 'helper()')
