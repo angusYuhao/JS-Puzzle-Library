@@ -1,20 +1,41 @@
 .puzzleGridCanvas {
     /* overflow: scroll; */
-    float: left;
+    /* float: left; */
+    position: relative;
     width: 100%;
     height: 100%;
     border: 2px solid;
     display: grid;
     gap: 4px;
+    background-size: 100% 100%;
 }
 
 .puzzleMatchingCanvas {
     /* overflow: scroll; */
+    position: relative;
     width: 100%;
     height: 100%;
     border: 2px solid;
     display: block;
     gap: 4px;
+    background-size: 100% 100%;
+}
+
+.canvasGridSlots {
+    margin: 0px;
+    background-color: rgba(210, 210, 210, 0.5);
+}
+
+.canvasMatchingSlot {
+    position: absolute;
+    background-color: rgba(210, 210, 210, 0.5);
+}
+
+.traySlot {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0px;
+    background-color: rgba(210, 210, 210, 0.5);
 }
 
 .piecesTray {
