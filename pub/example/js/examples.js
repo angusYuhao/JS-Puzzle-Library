@@ -92,38 +92,38 @@ const slotBorderRadius = "10px"
 
 // ==================================
 
-const orderMap4 = [
-    [0, 1, 2]
-]
+// const orderMap4 = [
+//     [0, 1, 2]
+// ]
 
-const cutouts = [
-    [
-        { x: 10, y: 10 },
-        { x: 70, y: 10 },
-        { x: 70, y: 70 }
-    ],
-    [
-        { x: 200, y: 200 },
-        { x: 400, y: 200 },
-        { x: 400, y: 300 }
-    ],
-    [
-        { x: 500, y: 500 },
-        { x: 900, y: 500 },
-        { x: 1000, y: 600 },
-        { x: 700, y: 750 }
-    ]
-]
+// const cutouts = [
+//     [
+//         { x: 10, y: 10 },
+//         { x: 70, y: 10 },
+//         { x: 70, y: 70 }
+//     ],
+//     [
+//         { x: 200, y: 200 },
+//         { x: 400, y: 200 },
+//         { x: 400, y: 300 }
+//     ],
+//     [
+//         { x: 500, y: 500 },
+//         { x: 900, y: 500 },
+//         { x: 1000, y: 600 },
+//         { x: 700, y: 750 }
+//     ]
+// ]
 
-canvasContainer1.addEventListener('puzzleUpdated', function (e) {
-    console.log("action:", e.detail.action)
-    console.log("puzzle2 is completed:", e.detail.puzzleStatus)
-})
+// canvasContainer1.addEventListener('puzzleUpdated', function (e) {
+//     console.log("action:", e.detail.action)
+//     console.log("puzzle2 is completed:", e.detail.puzzleStatus)
+// })
 
-const puzzle5 = new ImagePuzzle("cutout")
-puzzle5.bindImage("./image1.jpg")
-puzzle5.createCutoutCanvas(canvasContainer1, cutouts, trayContainer1, 1, 3, 4, orderMap4, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "white", slotBorderRadius, 
-                        "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
+// const puzzle5 = new ImagePuzzle("cutout")
+// puzzle5.bindImage("./image1.jpg")
+// puzzle5.createCutoutCanvas(canvasContainer1, cutouts, trayContainer1, 1, 3, 4, orderMap4, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "white", slotBorderRadius, 
+//                         "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
 
 // ==================================
 

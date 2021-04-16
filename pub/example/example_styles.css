@@ -1,17 +1,50 @@
-#canvasContainer1 {
-    max-width: 50%;
-    /* border: 2px solid; */
+.body {
+    margin: 0%;
 }
 
-#trayContainer1 {
-    max-width: 50%;
-    /* border: 2px solid; */
+.mainBackground {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-color: #a1dbd4;
+    background-image: url("./mainBackground.png");
 }
 
-#canvasContainer2 {
-    max-width: 80%;
+.mainContentWrapper {
+    position: relative;
+    visibility: hidden;
+    margin: auto;
+    top: 20%;
+    width: 100%;
+    height: 40%;
+    text-align: center;
+    display: block;
+    font-size: 16px;
 }
 
-#trayContainer2 {
-    max-width: 100%;
+.mainTitle {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+}
+
+.mainTitleImage {
+    visibility: visible;
+    object-fit: cover;
+}
+
+nav {
+    display: block;
+}
+
+.link {
+    visibility: visible;
+    display: inline-block;
+    color: black;
+    padding: 5px 10px 5px 10px;
+    margin-right: 15px;
+    border: solid 1px;
 }
