@@ -10,7 +10,7 @@
         // object constructor
         constructor(puzzleType) {
 
-            if (puzzleType !== "grid" && puzzleType !== "matching") {
+            if (puzzleType !== "grid" && puzzleType !== "scatter" && puzzleType !== "scramble") {
                 console.log("invalid puzzle type, defaulting to grid")
                 puzzleType = "grid"
             }
@@ -20,7 +20,7 @@
             this.pieces = []
             // class Slot object array
             this.canvasSlots = []
-            // DOM arrays
+            // DOM elements
             this.piecesDOM = []
             this.backCanvasDOM = null
             this.backTrayDOM = null
@@ -28,6 +28,7 @@
             this.traySlotsDOM = []
             this.canvasParentDOM = null
             this.trayParentDOM = null
+            this.titleBarDOM = null
             // Others
             this.canvasParentWidth = null
             this.trayParentWidth = null
@@ -52,7 +53,7 @@
 
         // bind puzzle image
         bindImage(imgURL) {
-            if (this.type !== "grid") {
+            if (this.type !== "grid" && this.type !== "scramble") {
                 return false
             }
             this.imgURL = imgURL
@@ -66,7 +67,7 @@
 
         // set the dimension for grid puzzle
         setGridDimensions(numRows, numCols, gapSize=4) {
-            if (this.type !== "grid") {
+            if (this.type !== "grid" && this.type !== "scramble") {
                 return false
             }
             this.numRows = numRows
@@ -165,6 +166,7 @@
                 backCanvas.appendChild(titleBar)
                 backCanvas.appendChild(puzzleCanvas)
                 parentElement.appendChild(backCanvas)
+                this.titleBarDOM = titleBar
                 this.canvas = puzzleCanvas
                 this.backCanvasDOM = backCanvas
                 this.canvasParentDOM = parentElement
@@ -172,7 +174,7 @@
             
         }
 
-        createMatchingCanvas(parentElement, slotsArray, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px") {
+        createScatterCanvas(parentElement, slotsArray, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px") {
 
             let windowWidth = parentElement.clientWidth
             this.canvasParentWidth = windowWidth
@@ -205,14 +207,14 @@
                 const width = Math.floor(imgWidth * (windowWidth / imgWidth))
                 const height = Math.floor(imgHeight * (windowWidth / imgWidth))
 
-                let matchingCanvas = document.createElement('div')
-                matchingCanvas.setAttribute("class", "matchingCanvas")
-                // matchingCanvas.style.width = width.toString() + "px"
-                matchingCanvas.style.height = height.toString() + "px"
-                matchingCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
+                let scatterCanvas = document.createElement('div')
+                scatterCanvas.setAttribute("class", "scatterCanvas")
+                // scatterCanvas.style.width = width.toString() + "px"
+                scatterCanvas.style.height = height.toString() + "px"
+                scatterCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
 
                 if (this.backgroundImgURL != null) {
-                    matchingCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
+                    scatterCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
                 }
 
                 for (let i = 0; i < slotsArray.length; i++) {
@@ -220,7 +222,7 @@
                     let newID = this.canvasSlots.length
 
                     let canvasSlot = document.createElement('div')
-                    canvasSlot.setAttribute("class", "canvasMatchingSlot")
+                    canvasSlot.setAttribute("class", "canvasScatterSlot")
                     canvasSlot.setAttribute("id", "slot_" + newID.toString())
                     canvasSlot.ondrop = () => { this.drop(event) }
                     canvasSlot.ondragover = () => { this.allowDrop(event) }
@@ -236,21 +238,69 @@
                     let slot = new Slot(newID, slotsArray[i].left, slotsArray[i].top, slotsArray[i].left + slotsArray[i].width, slotsArray[i].top + slotsArray[i].height)
                     this.canvasSlots.push(slot)
 
-                    matchingCanvas.appendChild(canvasSlot)
+                    scatterCanvas.appendChild(canvasSlot)
                     this.canvasSlotsDOM.push(canvasSlot)
                 }
 
                 backCanvas.appendChild(titleBar)
-                backCanvas.appendChild(matchingCanvas)
+                backCanvas.appendChild(scatterCanvas)
                 parentElement.appendChild(backCanvas)
-                this.canvas = matchingCanvas
+                this.titleBarDOM = titleBar
+                this.canvas = scatterCanvas
                 this.backCanvasDOM = backCanvas
                 this.canvasParentDOM = parentElement
             }
             
         }
 
-        createMatchings(slotArray, imgURLArray) {
+        createScrambleCanvas(parentElement, orderMap, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px") {
+
+            if (!this.checkOrderMapValidity(orderMap)) {
+                console.log("Invalid orderMap, scrambleCanvas not created!")
+                return
+            }
+            
+            // get the parent's width and store it in object
+            let windowWidth = parentElement.clientWidth
+            this.canvasParentWidth = windowWidth
+
+            // create the backCanvas
+            let backCanvas = document.createElement('div')
+            backCanvas.setAttribute("class", "backCanvas")
+            backCanvas.style.backgroundColor = backgroundColor
+            backCanvas.style.borderRadius = canvasBorderRadius
+
+            // create the titleBar
+            let titleBar = document.createElement('div')
+            titleBar.setAttribute("class", "canvasTitleBar")
+            titleBar.innerHTML = titleText
+            titleBar.style.color = titleTextColor
+            titleBar.style.backgroundColor = titleBarColor
+            titleBar.style.borderRadius = canvasBorderRadius + " " + canvasBorderRadius + " 0%" + " 0%"
+
+            // create canvas DOM element
+            let puzzleCanvas = document.createElement('div')
+            puzzleCanvas.setAttribute("class", "scrambleCanvas")
+            puzzleCanvas.style.gridTemplateRows = "repeat(" + (this.numRows).toString() + ", 1fr)"
+            puzzleCanvas.style.gridTemplateColumns = "repeat(" + (this.numCols).toString() + ", 1fr)"
+            puzzleCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
+
+            if (this.backgroundImgURL != null) {
+                puzzleCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
+            }
+
+            backCanvas.appendChild(titleBar)
+            backCanvas.appendChild(puzzleCanvas)
+            parentElement.appendChild(backCanvas)
+            this.titleBarDOM = titleBar
+            this.canvas = puzzleCanvas
+            this.backCanvasDOM = backCanvas
+            this.canvasParentDOM = parentElement
+
+            this.cutImage(null, puzzleCanvas, 0, 0, slotColor, slotBorderRadius, orderMap)
+        }
+
+        createScatterMatchings(slotArray, imgURLArray) {
 
             for (let i = 0; i < slotArray.length; i++) {
                 let piece = new Piece(i, slotArray[i], imgURLArray[i])
@@ -259,6 +309,12 @@
         }
         
         createTray(parentElement, numRows, numCols, orderMap, gapSize=4, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
+            
+            if (!this.checkOrderMapValidity(orderMap)) {
+                console.log("Invalid orderMap, tray not created!")
+                return
+            }
+
             this.trayGapSize = gapSize
             this.trayParentWidth = parentElement.clientWidth
             this.createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor)
@@ -302,14 +358,14 @@
             this.trayParentDOM = parentElement
 
             if (this.type === "grid") {
-                this.cutImage(piecesTray, numRows, numCols, slotColor, slotBorderRadius, orderMap)
+                this.cutImage(piecesTray, null, numRows, numCols, slotColor, slotBorderRadius, orderMap)
             }
             else {
-                this.displayMatchingTray(numRows, numCols, orderMap, slotColor, slotBorderRadius, parentElement.clientHeight, parentElement.clientWidth)
+                this.displayScatterTray(numRows, numCols, orderMap, slotColor, slotBorderRadius, parentElement.clientHeight, parentElement.clientWidth)
             }
         }
 
-        displayMatchingTray(tNumRows, tNumCols, orderMap, slotColor, slotBorderRadius, pHeight, pWidth) {
+        displayScatterTray(tNumRows, tNumCols, orderMap, slotColor, slotBorderRadius, pHeight, pWidth) {
 
             let imgArray = []
             for (let i = 0; i < this.pieces.length; i++) {
@@ -360,7 +416,7 @@
             }
         }
 
-        cutImage(piecesTray, tNumRows, tNumCols, slotColor, slotBorderRadius, orderMap) {
+        cutImage(piecesTray, canvas, tNumRows, tNumCols, slotColor, slotBorderRadius, orderMap) {
 
             const img_element = new Image()
             img_element.setAttribute("id", "puzzle_image")
@@ -400,9 +456,68 @@
                     }
                 }
                 
-                this.displayGridTray(piecesTray, puzzlePiecesArr, tNumCols, tNumRows, slotColor, slotBorderRadius, orderMap)
-        
+                if (piecesTray !== null) {
+                    this.displayGridTray(piecesTray, puzzlePiecesArr, tNumCols, tNumRows, slotColor, slotBorderRadius, orderMap)
+                }
+                else {
+                    this.displayScrambleCanvas(canvas, puzzlePiecesArr, slotColor, slotBorderRadius, orderMap)
+                }
             }
+        }
+
+        displayScrambleCanvas(canvas, puzzlePiecesArr, slotColor, slotBorderRadius, orderMap) {
+
+            const width = Math.floor((this.imgWidth / this.numCols) * (this.trayParentWidth / this.imgWidth) - (this.gridGapSize * (this.numCols - 1)))
+            const height = Math.floor((this.imgHeight / this.numRows) * (this.trayParentWidth / this.imgWidth) - (this.gridGapSize * (this.numRows - 1)))
+
+            // create the canvas slots
+            for (let y = 0; y < this.numRows; ++y) {
+                for (let x = 0; x < this.numCols; ++x) {
+
+                    // get the slot id
+                    let newID = y * this.numCols + x
+                    console.log("slotIDs", newID)
+
+                    // create slot in object array
+                    let slot = new Slot(newID, x + 1, y + 1, x + 2, y + 2)
+                    this.canvasSlots.push(slot)
+
+                    // create piece in object array
+                    let piece = new Piece(newID, newID, null)
+                    this.pieces.push(piece)
+
+                    // create slot in DOM
+                    let canvasSlot = document.createElement('div')
+                    canvasSlot.setAttribute("class", "canvasScrambleSlots")
+                    canvasSlot.setAttribute("id", "slot_" + newID.toString())
+                    canvasSlot.ondrop = () => { this.drop(event) }
+                    canvasSlot.ondragover = () => { this.allowDrop(event) }
+                    // canvasSlot.addEventListener("drop", () => { this.checkPieceCorrectness(event) })
+
+                    canvasSlot.style.gridColumnStart = (x + 1).toString()
+                    canvasSlot.style.gridColumnEnd = (x + 2).toString()
+                    canvasSlot.style.gridRowStart = (y + 1).toString()
+                    canvasSlot.style.gridRowEnd = (y + 2).toString()
+                    canvasSlot.style.minWidth = width.toString() + "px"
+                    canvasSlot.style.minHeight = height.toString() + "px"
+                    canvasSlot.style.backgroundColor = slotColor
+                    canvasSlot.style.borderRadius = slotBorderRadius
+
+                    puzzlePiecesArr[orderMap[y][x]].style.height = "100%"
+                    puzzlePiecesArr[orderMap[y][x]].style.width = "100%"
+
+                    canvasSlot.appendChild(puzzlePiecesArr[orderMap[y][x]])
+                    this.canvas.appendChild(canvasSlot)
+                    this.canvasSlotsDOM.push(canvasSlot)
+                    
+                }
+            }
+
+            for (let i = 0; i < this.numRows * this.numCols; ++i) {
+                    this.checkDirectPieceCorrectness(this.canvasSlotsDOM[i], i, "initial")
+            }
+
+
         }
 
         displayGridTray(piecesTray, puzzlePiecesArr, tNumCols, tNumRows, slotColor, slotBorderRadius, orderMap) {
@@ -501,7 +616,7 @@
             parentElement.dispatchEvent(updateEvent)
         }
 
-        checkSwitchPieceCorrectness(element, sequence) {
+        checkDirectPieceCorrectness(element, sequence, actionType) {
 
             const target_slot = element
             const target_slot_id = parseInt(target_slot.id.substring(5), 10)
@@ -510,6 +625,9 @@
 
             const child_piece = target_slot.firstElementChild
             const child_piece_id = parseInt(child_piece.id.substring(6), 10)
+
+            // console.log(child_piece_id)
+            // console.log(this.pieces)
 
             let piece_info = null
 
@@ -540,10 +658,29 @@
             const parentElement = this.canvasParentDOM
 
             const updateEvent = new CustomEvent('puzzleUpdated', { 
-                detail: { pieceStatus: piece_info.correct, puzzleStatus: this.completed, targetSlotID: target_slot_id, action: "switch" + sequence.toString() } 
+                detail: { pieceStatus: piece_info.correct, puzzleStatus: this.completed, targetSlotID: target_slot_id, action: actionType + sequence.toString() } 
             })
 
             parentElement.dispatchEvent(updateEvent)
+        }
+
+        checkOrderMapValidity(orderMap) {
+
+            let tempArray = []
+            for (let i = 0; i < this.numRows; i++) {
+                for (let j = 0; j < this.numCols; j++) {
+                    tempArray[i * this.numCols + j] = orderMap[i][j]
+                }
+            }
+
+            tempArray.sort((a, b) => a - b)
+
+            for (let k = 0; k < tempArray.length; k++) {
+                if (tempArray[k] !== k) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         drag(event) {
@@ -587,15 +724,17 @@
             }
 
             if (element !== null && event.target.id.substring(0, 4) !== "tray" && event.target.id.substring(0, 4) !== "slot") {
+
                 console.log("switched!")
                 const targetParent = event.target.parentElement
                 targetParent.removeChild(event.target)
                 targetParent.appendChild(element)
                 originalParent.appendChild(event.target)
-                this.checkSwitchPieceCorrectness(targetParent, 1)
-                this.checkSwitchPieceCorrectness(originalParent, 2)
+                this.checkDirectPieceCorrectness(targetParent, 1, "switch")
+                this.checkDirectPieceCorrectness(originalParent, 2, "switch")
             }
             else if (element !== null) {
+
                 console.log("dropped!")
                 event.target.appendChild(element)
                 this.checkPieceCorrectness(event)
