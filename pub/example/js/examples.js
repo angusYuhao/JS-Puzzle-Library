@@ -121,7 +121,7 @@ canvasContainer1.addEventListener('puzzleUpdated', function (e) {
 })
 
 const puzzle5 = new ImagePuzzle("cutout")
-puzzle5.bindImage("./image5.jpg")
+puzzle5.bindImage("./image1.jpg")
 puzzle5.createCutoutCanvas(canvasContainer1, cutouts, trayContainer1, 1, 3, 4, orderMap4, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "white", slotBorderRadius, 
                         "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
 
