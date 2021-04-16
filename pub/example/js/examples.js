@@ -56,22 +56,22 @@ const slotBorderRadius = "10px"
 
 // ==================================
 
-const orderMap2 = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8]
-]
+// const orderMap2 = [
+//     [0, 1, 2],
+//     [3, 4, 5],
+//     [6, 7, 8]
+// ]
 
-canvasContainer2.addEventListener('puzzleUpdated', function (e) {
-    console.log("action:", e.detail.action)
-    console.log("puzzle2 is completed:", e.detail.puzzleStatus)
-})
+// canvasContainer2.addEventListener('puzzleUpdated', function (e) {
+//     console.log("action:", e.detail.action)
+//     console.log("puzzle2 is completed:", e.detail.puzzleStatus)
+// })
 
-const puzzle2 = new ImagePuzzle("grid")
-puzzle2.bindImage("./rapture.jpg")
-// puzzle1.bindBackgroundImage("./test_img.jpg")
-puzzle2.createGridCanvas(canvasContainer2, 3, 3, 4, "cornflowerblue", "black", "this is title", slotColor, slotBorderRadius, "yellow", slotBorderRadius)
-puzzle2.createTray(trayContainer2, 3, 3, 4, orderMap2, "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
+// const puzzle2 = new ImagePuzzle("grid")
+// puzzle2.bindImage("./image1.jpg")
+// // puzzle1.bindBackgroundImage("./test_img.jpg")
+// puzzle2.createGridCanvas(canvasContainer2, 3, 3, 4, "cornflowerblue", "black", "this is title", slotColor, slotBorderRadius, "yellow", slotBorderRadius)
+// puzzle2.createTray(trayContainer2, 3, 3, 4, orderMap2, "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
 
 // ==================================
 
@@ -121,7 +121,7 @@ canvasContainer1.addEventListener('puzzleUpdated', function (e) {
 })
 
 const puzzle5 = new ImagePuzzle("cutout")
-puzzle5.bindImage("./test_img.jpg")
+puzzle5.bindImage("./image5.jpg")
 puzzle5.createCutoutCanvas(canvasContainer1, cutouts, trayContainer1, 1, 3, 4, orderMap4, "cornflowerblue", "white", "this is title", slotColor, slotBorderRadius, "white", slotBorderRadius, 
                         "cornflowerblue", "white", "Title Here", slotColor, slotBorderRadius, "green", slotBorderRadius)
 
