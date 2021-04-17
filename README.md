@@ -9,41 +9,46 @@ https://sheltered-inlet-02042.herokuapp.com/
 "library/styles.css"
 
 ### Example Include Files HTML
-&lt;link rel="stylesheet" type="text/css" href="./library/styles.css"&gt;
-&lt;script defer type="text/javascript" src='./library/js/library.js'&gt;
+```
+<link rel="stylesheet" type="text/css" href="./library/styles.css">
+<script defer type="text/javascript" src="./library/js/library.js">
+```
 
 ### 2 x 2 Grid Puzzle Complete Working Example
 
 ##### example.html:
 
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-    &lt;head&gt;
-        &lt;meta charset="utf-8"&gt;
-        &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+```
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         
-        &lt;title&gt;Puzzles&lt;/title&gt;
+        <title>Puzzles</title>
     
-        &lt;link rel="stylesheet" type="text/css" href="./library/styles.css"&gt;
-        &lt;link rel="stylesheet" type="text/css" href="./puzzleExamplesStyles.css"&gt;
+        <link rel="stylesheet" type="text/css" href="./library/styles.css">
+        <link rel="stylesheet" type="text/css" href="./puzzleExamplesStyles.css">
     
-        &lt;script defer type="text/javascript" src='./library/js/library.js'&gt;&lt;/script&gt;
-        &lt;script defer type="text/javascript" src='./js/example.js'&gt;&lt;/script&gt;
+        <script defer type="text/javascript" src='./library/js/library.js'></script>
+        <script defer type="text/javascript" src='./js/example.js'></script>
     
-    &lt;/head&gt;
-    &lt;body class="body"&gt;
-        &lt;div class="content"&gt;
-            &lt;div class="contentBlock"&gt;
-                &lt;h1&gt;Example:&lt;/h1&gt;
-                &lt;div class="puzzleCanvasContainer" id="canvas1"&gt;&lt;/div&gt;
-                &lt;div class="puzzleTrayContainer" id="tray1"&gt;&lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
+    </head>
+    <body class="body">
+        <div class="content">
+            <div class="contentBlock">
+                <h1>Example:</h1>
+                <div class="puzzleCanvasContainer" id="canvas1"></div>
+                <div class="puzzleTrayContainer" id="tray1"></div>
+            </div>
+        </div>
+    </body>
+</html>
+```
 
-##### example.html:
+##### puzzleExamplesStyles.css:
 
+```
 .body {
     padding-top: 50px;
     margin: 0px;
@@ -75,9 +80,11 @@ https://sheltered-inlet-02042.herokuapp.com/
     width: 100%;
     border: solid 2px #eee;
 }
+```
 
 ##### example.js:
 
+```
 "use strict"
 
 const canvasContainer1 = document.querySelector('#canvas1')
@@ -101,6 +108,7 @@ puzzle1.createGridCanvas(canvasContainer1, 2, 2, 4,
 puzzle1.createTray(trayContainer1, 1, 4, 4, orderMap1, false, 
                             "cornflowerblue", "white", "Title Name", 
                             "rgba(255, 59, 59, 0.5)", "4px", "rgba(25, 25, 25, 1)", "4px")
+```
 
 # Link to Documentation
 https://sheltered-inlet-02042.herokuapp.com/APIDescription.html
