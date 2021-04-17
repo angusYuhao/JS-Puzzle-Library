@@ -9,8 +9,10 @@ https://sheltered-inlet-02042.herokuapp.com/
 "library/styles.css"
 
 ### Example Include Files HTML
-&lt;link rel="stylesheet" type="text/css" href="./library/styles.css"&gt;
-&lt;script defer type="text/javascript" src='./library/js/library.js'&gt;
+```
+<link rel="stylesheet" type="text/css" href="./library/styles.css">
+<script defer type="text/javascript" src="./library/js/library.js">
+```
 
 ### 2 x 2 Grid Puzzle Complete Working Example
 
@@ -44,7 +46,7 @@ https://sheltered-inlet-02042.herokuapp.com/
 </html>
 ```
 
-##### example.html:
+##### puzzleExamplesStyles.css:
 
 ```
 .body {
