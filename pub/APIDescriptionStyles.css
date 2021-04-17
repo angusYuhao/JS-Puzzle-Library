@@ -51,10 +51,11 @@ nav {
     margin-bottom: 75px;
     width: 80%;
     height: auto;
-    padding: 0px 15px 0px 15px;
+    padding: 10px 15px 10px 15px;
     margin: 0% 10% 0% 10%;
     box-sizing: border-box;
     display: block;
+    border-radius: 4px;
     background-color: #ebf1ee;
 }
 
@@ -76,6 +77,15 @@ nav {
     background-color: rgb(226, 226, 226);
 }
 
+.codeWrapperEntire {
+    width: 100%;
+    display: inline-block;
+    border-radius: 4px;
+    margin: auto;
+    /* border: solid 1px #505050; */
+    background-color: rgb(226, 226, 226);
+}
+
 .tab {
     margin-left: 2.5em;
 }
@@ -92,7 +102,7 @@ pre {
 
 .subTitle {
     /* margin-left: 2.5em; */
-    color: rgb(169, 177, 100);
+    color: rgb(93, 133, 121);
     font-weight: bold;
 }
 

@@ -8,7 +8,6 @@
 
     <link rel="stylesheet" type="text/css" href="./library/styles.css">
     <link rel="stylesheet" type="text/css" href="./APIDescriptionStyles.css">
-
     <script defer type="text/javascript" src='./library/js/library.js'></script>
 
  </head>
@@ -22,11 +21,154 @@
         </div>
     </header>
     <div class="content">
+        <br />
+        <br />
         <div class="contentBlock">
-            <h1>API DESCRIPTION</h1>
-            <h2>Library Functions:</h2>
+            <h1>GETTING STARTED</h1>
 
-            <h3>constructor</h3>
+            <h3>Include Files</h3>
+            <p>"library/js/library.js"</p>
+            <p>"library/styles.css"</p>
+            <br />
+
+            <h3>Example Include Files HTML</h3>
+            <span class="codeWrapper">
+                <pre><code>&lt;link rel="stylesheet" type="text/css" href="./library/styles.css"&gt;</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>&lt;script defer type="text/javascript" src='./library/js/library.js'&gt;</code></pre>
+            </span>
+            <br />
+            <br />
+            <br />
+
+            <h3>2 x 2 Grid Puzzle Complete Working Example</h3>
+            <p>example.html</p>
+            <div class="codeWrapperEntire">
+                <pre>
+                    <code>
+                        &lt;!DOCTYPE html&gt;
+                        &lt;html lang="en"&gt;
+                            &lt;head&gt;
+                                &lt;meta charset="utf-8"&gt;
+                                &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+                                
+                                &lt;title&gt;Puzzles&lt;/title&gt;
+                            
+                                &lt;link rel="stylesheet" type="text/css" href="./library/styles.css"&gt;
+                                &lt;link rel="stylesheet" type="text/css" href="./puzzleExamplesStyles.css"&gt;
+                            
+                                &lt;script defer type="text/javascript" src='./library/js/library.js'&gt;&lt;/script&gt;
+                                &lt;script defer type="text/javascript" src='./js/example.js'&gt;&lt;/script&gt;
+                            
+                            &lt;/head&gt;
+                            &lt;body class="body"&gt;
+                                &lt;div class="content"&gt;
+                                    &lt;div class="contentBlock"&gt;
+                                        &lt;h1&gt;Example:&lt;/h1&gt;
+                                        &lt;div class="puzzleCanvasContainer" id="canvas1"&gt;&lt;/div&gt;
+                                        &lt;div class="puzzleTrayContainer" id="tray1"&gt;&lt;/div&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                            &lt;/body&gt;
+                        &lt;/html&gt;
+                    </code>
+                </pre>
+            </div>
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p>puzzleExamplesStyles.css</p>
+            <div class="codeWrapperEntire">
+                <pre>
+                    <code>
+                        .body {
+                            padding-top: 50px;
+                            margin: 0px;
+                            display: block;
+                        }
+
+                        .content {
+                            display: block;
+                        }
+
+                        .contentBlock {
+                            margin-bottom: 75px;
+                            width: 80%;
+                            height: auto;
+                            padding: 0px 15px 0px 15px;
+                            margin: 0% 10% 0% 10%;
+                            box-sizing: border-box;
+                            display: block;
+                        }
+
+                        .puzzleCanvasContainer {
+                            position: relative;
+                            width: 100%;
+                            border: solid 2px #eee;
+                        }
+                        
+                        .puzzleTrayContainer {
+                            position: relative;
+                            width: 100%;
+                            border: solid 2px #eee;
+                        }
+                    </code>
+                </pre>
+            </div>
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p>example.js</p>
+            <div class="codeWrapperEntire">
+                <pre>
+                    <code>
+                        "use strict"
+
+                        const canvasContainer1 = document.querySelector('#canvas1')
+                        const trayContainer1 = document.querySelector('#tray1')
+
+                        const orderMap1 = [
+                            [0, 3, 2, 1],
+                        ]
+
+                        canvasContainer1.addEventListener('puzzleUpdated', function (e) {
+                            if (e.detail.puzzleStatus) {
+                                console.log("puzzle completed!")
+                            }
+                        })
+
+                        const puzzle1 = new ImagePuzzle("grid")
+                        puzzle1.bindImage("./image1.jpg")
+                        puzzle1.createGridCanvas(canvasContainer1, 2, 2, 4, 
+                                                    "grey", "white", "Title Name", 
+                                                    "rgba(255, 59, 59, 0.5)", "4px", "rgba(25, 25, 25, 1)", "4px")
+                        puzzle1.createTray(trayContainer1, 1, 4, 4, orderMap1, false, 
+                                                    "cornflowerblue", "white", "Title Name", 
+                                                    "rgba(255, 59, 59, 0.5)", "4px", "rgba(25, 25, 25, 1)", "4px")
+                    </code>
+                </pre>
+            </div>
+            <br />
+            <br />
+        </div>
+
+        <br />
+        <br />
+
+        <div class="contentBlock">
+
+            <h1>API DESCRIPTION</h1>
+
+            <h3>Constructor</h3>
             <p class="functionName">ImagePuzzle(puzzleType)</p>
             <p class="subTitle">Description:</p>
             <span>Create a new puzzle object, puzzle type is given in </span>
@@ -632,10 +774,14 @@
             </span>
             <br />
             <br />
-            <br />
 
+        </div>
+        <br />
+        <br />
 
-            <h2>Overall Work Flow:</h2>
+        <div class="contentBlock">
+
+            <h1>OVERALL WORK FLOW</h1>
             <p>This portion shows the standard function call order for each of the following puzzle types:</p>
             <p class="tab">1. Grid Puzzle</p>
             <p class="tab">2. Scatter Puzzle</p>
@@ -666,6 +812,8 @@
             <p class="subTitle">3. createCutoutCanvas</p>
             <br />
         </div>
+        <br />
+        <br />
     </div>
  </body>
 
