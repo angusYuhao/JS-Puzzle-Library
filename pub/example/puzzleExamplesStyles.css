@@ -1,0 +1,92 @@
+.body {
+    padding-top: 50px;
+    margin: 0px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: #202020;
+    display: block;
+}
+
+.header {
+    position: fixed;
+    width: 100%;
+    height: 49px;
+    top: 0px;
+    border-bottom: solid 1px #c5c5c5;
+    background-color: rgb(185, 182, 160);
+    z-index: 10;
+    display: block;
+}
+
+.headerContentContainer {
+    position: fixed;
+    width: 80%;
+    height: 49px;
+    top: 0px;
+    padding: 0px 15px 0px 15px;
+    margin: 0% 10% 0% 10%;
+    box-sizing: border-box;
+    display: block;
+    text-align: center;
+}
+
+nav {
+    display: block;
+    padding-top: 10px;
+}
+
+.link {
+    visibility: visible;
+    display: inline-block;
+    color: black;
+    padding: 5px 10px 5px 10px;
+    margin-right: 15px;
+    border: solid 1px;
+}
+
+.content {
+    display: block;
+}
+
+.contentBlock {
+    margin-bottom: 75px;
+    width: 80%;
+    height: auto;
+    padding: 0px 15px 0px 15px;
+    margin: 0% 10% 0% 10%;
+    box-sizing: border-box;
+    display: block;
+}
+
+.puzzleCanvasContainer {
+    position: relative;
+    width: 100%;
+    border: solid 2px #eee;
+}
+
+.puzzleTrayContainer {
+    position: relative;
+    width: 100%;
+    border: solid 2px #eee;
+}
+
+.codeWrapper {
+    margin-top: 30px;
+    width: 100%;
+    border-radius: 4px;
+    /* border: solid 1px #505050; */
+    background-color: rgb(226, 226, 226);
+}
+
+.completeNotification {
+    display: none;
+    text-align: center;
+    position: fixed;
+    top: 40%;
+    left: 20%;
+    width: 60%;
+    height: 10%;
+    padding-top: 45px;
+    border-radius: 4px;
+    border: solid 1px #505050;
+    background-color: #9edf72;
+}

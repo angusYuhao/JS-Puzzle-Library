@@ -253,14 +253,14 @@
         // create the main scramble canvas
         createScrambleCanvas(parentElement, numRows, numCols, gapSize, orderMap, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px") {
 
+            this.numRows = numRows
+            this.numCols = numCols
+            this.gridGapSize = gapSize
+
             if (!this.checkOrderMapValidity(orderMap)) {
                 console.log("Invalid orderMap, scrambleCanvas not created!")
                 return
             }
-
-            this.numRows = numRows
-            this.numCols = numCols
-            this.gridGapSize = gapSize
             
             // get the parent's width and store it in object
             let windowWidth = parentElement.clientWidth
@@ -306,7 +306,7 @@
         // create the main cutout canvas
         createCutoutCanvas(canvasParentElement, cutoutsArray, trayParentElement, numRows, numCols, gapSize, orderMap, 
             cTitleBarColor="cornflowerblue", cTitleTextColor="white", cTitleText="", cSlotColor="grey", cSlotBorderRadius="0px", cBackgroundColor="white", canvasBorderRadius="0px",
-            titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
+            slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
             
             let windowWidth = canvasParentElement.clientWidth
             this.canvasParentWidth = windowWidth
@@ -336,6 +336,9 @@
 
                 const imgWidth = img_element.naturalWidth
                 const imgHeight = img_element.naturalHeight
+
+                const percentOverWidth = 100 / imgWidth
+                const percentOverHeight = 100 / imgHeight
 
                 this.imgWidth = imgWidth
                 this.imgHeight = imgHeight
@@ -442,7 +445,7 @@
                 this.tNumCols = numCols
                 this.trayGapSize = gapSize
                 this.trayParentWidth = trayParentElement.clientWidth
-                this.createTrayHelper(trayParentElement, numRows, numCols, slotColor, "0px", orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor, cutoutPiecesArray)
+                this.createTrayHelper(trayParentElement, false, numRows, numCols, slotColor, "0px", orderMap, backgroundColor, trayBorderRadius, "", "white", "black", cutoutPiecesArray)
             }
         }
 
@@ -456,7 +459,7 @@
         }
         
         // create the puzzle tray
-        createTray(parentElement, numRows, numCols, gapSize, orderMap, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
+        createTray(parentElement, numRows, numCols, gapSize, orderMap, displayTitle, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
             
             if (!this.checkOrderMapValidity(orderMap)) {
                 console.log("Invalid orderMap, tray not created!")
@@ -467,7 +470,7 @@
             this.tNumCols = numCols
             this.trayGapSize = gapSize
             this.trayParentWidth = parentElement.clientWidth
-            this.createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor, null)
+            this.createTrayHelper(parentElement, displayTitle, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor, null)
         }
 
 
@@ -476,7 +479,7 @@
         // =============================================== //
 
         // create the pieces tray helper
-        createTrayHelper(parentElement, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor, cutoutPiecesArray) {
+        createTrayHelper(parentElement, displayTitle, numRows, numCols, slotColor, slotBorderRadius, orderMap, backgroundColor, trayBorderRadius, titleText, titleTextColor, titleBarColor, cutoutPiecesArray) {
 
             // create the backTray
             let backTray = document.createElement('div')
@@ -501,7 +504,7 @@
             piecesTray.style.borderRadius = trayBorderRadius
 
             // save relevant info
-            backTray.appendChild(titleBar)
+            if (displayTitle) { backTray.appendChild(titleBar) }
             backTray.appendChild(piecesTray)
             parentElement.appendChild(backTray)
             this.tray = piecesTray
@@ -849,12 +852,24 @@
         checkOrderMapValidity(orderMap) {
 
             let tempArray = []
-            for (let i = 0; i < this.tNumRows; i++) {
-                for (let j = 0; j < this.tNumCols; j++) {
-                    tempArray[i * this.numCols + j] = orderMap[i][j]
+            if (this.type !== "scramble")
+            {
+                for (let i = 0; i < this.tNumRows; i++) {
+                    for (let j = 0; j < this.tNumCols; j++) {
+                        tempArray.push(orderMap[i][j])
+                    }
+                }
+            }
+            else {
+                for (let i = 0; i < this.numRows; i++) {
+                    for (let j = 0; j < this.numCols; j++) {
+                        tempArray.push(orderMap[i][j])
+                    }
                 }
             }
 
+            console.log(tempArray)
+            
             tempArray.sort((a, b) => a - b)
 
             for (let k = 0; k < tempArray.length; k++) {
