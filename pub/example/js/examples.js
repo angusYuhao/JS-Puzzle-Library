@@ -92,7 +92,7 @@ let imgArray = ["./image3_engine.jpg", "./image3_command.jpg", "image3_lunar.jpg
 
 
 const puzzle3 = new ImagePuzzle("scatter")
-puzzle3.bindBackgroundImage("./image3.jpg")
+puzzle3.bindImage("./image3.jpg")
 puzzle3.createScatterCanvas(canvasContainer3, slots, 
                             "rgba(25, 25, 25, 1)", "white", "Apollo Diagram", 
                             "rgba(50, 50, 50, 0.5)", "4px", "grey", "4px")
@@ -161,7 +161,7 @@ const puzzle5 = new ImagePuzzle("cutout")
 puzzle5.bindImage("./image5.jpg")
 puzzle5.createCutoutCanvas(canvasContainer5, cutouts, trayContainer5, 1, 3, 4, orderMap5, 
                             "rgba(235, 189, 26, 1)", "white", "Bioshock Rapture Poster", 
-                            "rgba(200, 200, 200, 1)", "4px", "grey", "4px", 
-                            "rgba(200, 200, 200, 1)", "4px", "grey", "4px")
+                            "rgba(200, 200, 200, 1)", "grey", "4px", 
+                            "rgba(200, 200, 200, 1)", "grey", "4px")
 
 // ==================================

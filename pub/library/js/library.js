@@ -56,11 +56,7 @@
 
         // bind puzzle image
         bindImage(imgURL) {
-            if (this.type !== "grid" && this.type !== "scramble" && this.type !== "cutout") {
-                return false
-            }
             this.imgURL = imgURL
-            return true
         }
 
         // bind background image for canvas
@@ -191,7 +187,7 @@
             // load the image to get image dimensions
             const img_element = new Image()
             img_element.setAttribute("id", "testPuzzleImage")
-            img_element.setAttribute("src", this.backgroundImgURL)
+            img_element.setAttribute("src", this.imgURL)
             img_element.onload = () => {
 
                 const imgWidth = img_element.naturalWidth
@@ -208,10 +204,7 @@
                 scatterCanvas.setAttribute("class", "scatterCanvas")
                 scatterCanvas.style.height = height.toString() + "px"
                 scatterCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
-
-                if (this.backgroundImgURL != null) {
-                    scatterCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
-                }
+                scatterCanvas.style.backgroundImage = "url(" + this.imgURL + ")"
 
                 // create the slots on canvas
                 for (let i = 0; i < slotsArray.length; i++) {
@@ -305,8 +298,8 @@
 
         // create the main cutout canvas
         createCutoutCanvas(canvasParentElement, cutoutsArray, trayParentElement, numRows, numCols, gapSize, orderMap, 
-            cTitleBarColor="cornflowerblue", cTitleTextColor="white", cTitleText="", cSlotColor="grey", cSlotBorderRadius="0px", cBackgroundColor="white", canvasBorderRadius="0px",
-            slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px") {
+            cTitleBarColor="cornflowerblue", cTitleTextColor="white", cTitleText="", cSlotColor="grey", cBackgroundColor="white", canvasBorderRadius="0px",
+            slotColor="grey", backgroundColor="white", trayBorderRadius="0px") {
             
             let windowWidth = canvasParentElement.clientWidth
             this.canvasParentWidth = windowWidth
@@ -337,8 +330,8 @@
                 const imgWidth = img_element.naturalWidth
                 const imgHeight = img_element.naturalHeight
 
-                const percentOverWidth = 100 / imgWidth
-                const percentOverHeight = 100 / imgHeight
+                // const percentOverWidth = 100 / imgWidth
+                // const percentOverHeight = 100 / imgHeight
 
                 this.imgWidth = imgWidth
                 this.imgHeight = imgHeight
@@ -352,6 +345,10 @@
                 cutoutCanvas.style.height = height.toString() + "px"
                 cutoutCanvas.style.borderRadius = "0% " + "0% " + canvasBorderRadius + " " + canvasBorderRadius
                 cutoutCanvas.style.backgroundImage = "url(" + this.imgURL + ")"
+
+                if (this.backgroundImgURL != null) {
+                    cutoutCanvas.style.backgroundImage = "url(" + this.backgroundImgURL + ")"
+                }
 
                 let cutoutPiecesArray = []
 

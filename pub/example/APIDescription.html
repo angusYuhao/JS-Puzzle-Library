@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Puzzles</title>
+
+    <link rel="stylesheet" type="text/css" href="../library/styles.css">
+    <link rel="stylesheet" type="text/css" href="./APIDescriptionStyles.css">
+
+    <script defer type="text/javascript" src='../library/js/library.js'></script>
+
+ </head>
+ <body class="body">
+    <header class="header">
+        <div class="headerContentContainer">
+            <nav>
+                <a class="link" href="landing.html">Home</a>
+                <a class="link" href="puzzleExamples.html">Demo</a>
+            </nav>
+        </div>
+    </header>
+    <div class="content">
+        <div class="contentBlock">
+            <h1>API DESCRIPTION</h1>
+            <h2>Library Functions:</h2>
+
+            <h3>constructor</h3>
+            <p class="functionName">ImagePuzzle(puzzleType)</p>
+            <p class="subTitle">Description:</p>
+            <span>Create a new puzzle object, puzzle type is given in </span>
+            <span class="codeWrapper">
+                <pre><code>puzzleType</code></pre>
+            </span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>puzzleType</code></pre>
+            </span>
+            <span>: can be the following: </span>
+            <span class="codeWrapper">
+                <pre><code>"grid"</code></pre>
+            </span>
+            <span class="codeWrapper">
+                <pre><code>"scatter"</code></pre>
+            </span>
+            <span class="codeWrapper">
+                <pre><code>"scramble"</code></pre>
+            </span>
+            <span class="codeWrapper">
+                <pre><code>"cutout"</code></pre>
+            </span>
+            <br />
+            <br />
+            <br />
+
+            <h3>User Functions</h3>
+            <p class="functionName">bindImage(imgURL)</p>
+            <p class="subTitle">Description:</p>
+            <span>Bind an image to the puzzle</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>imgURL</code></pre>
+            </span>
+            <span>: a string such as </span>
+            <span class="codeWrapper">
+                <pre><code>"./image.jpg"</code></pre>
+            </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p class="functionName">bindBackgroundImage(imgURL)</p>
+            <p class="subTitle">Description:</p>
+            <span>Bind a background image to the puzzle canvas</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>imgURL</code></pre>
+            </span>
+            <span>: a string such as </span>
+            <span class="codeWrapper">
+                <pre><code>"./image.jpg"</code></pre>
+            </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p class="functionName">createGridCanvas(parentElement, numRows, numCols, gapSize, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px"    )</p>
+            <p class="subTitle">Description:</p>
+            <span>Create the main grid canvas, can only be used if puzzle type is "grid"</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>parentElement</code></pre>
+            </span>
+            <span>: the parent element that wraps the canvas (DOM element), width must be set explicitly: 100%, 50px, etc. </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numRows</code></pre>
+            </span>
+            <span>: number of rows in the puzzle (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numCols</code></pre>
+            </span>
+            <span>: number of columns in the puzzle (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>gapSize</code></pre>
+            </span>
+            <span>: gap size between puzzle slots on the canvas (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleBarColor</code></pre>
+            </span>
+            <span>: color of the title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleTextColor</code></pre>
+            </span>
+            <span>: color of the title text (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleText</code></pre>
+            </span>
+            <span>: text to display on title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotColor</code></pre>
+            </span>
+            <span>: color of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotBorderRadius</code></pre>
+            </span>
+            <span>: border radius of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>backgroundColor</code></pre>
+            </span>
+            <span>: background color of the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>canvasBorderRadius</code></pre>
+            </span>
+            <span>: border radius of the canvas (string) </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+            
+            <p class="functionName">createScatterCanvas(parentElement, slotsArray, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px")</p>
+            <p class="subTitle">Description:</p>
+            <span>Create the main scatter canvas, can only be used if puzzle type is "scatter"</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>parentElement</code></pre>
+            </span>
+            <span>: the parent element that wraps the canvas (DOM element), width must be set explicitly: 100%, 50px, etc. </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotsArray</code></pre>
+            </span>
+            <span>: an array of slot coordinates in %, such as: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>const slots = [
+                { top: "41%", left: "22.7%", height: "9.5%", width: "10.3%"},
+                { top: "40%", left: "74.9%", height: "9%", width: "20.4%"},
+                { top: "74.8%", left: "59.9%", height: "9.1%", width: "16.6%"}
+            ]</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>gapSize</code></pre>
+            </span>
+            <span>: gap size between puzzle slots on the canvas (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleBarColor</code></pre>
+            </span>
+            <span>: color of the title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleTextColor</code></pre>
+            </span>
+            <span>: color of the title text (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleText</code></pre>
+            </span>
+            <span>: text to display on title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotColor</code></pre>
+            </span>
+            <span>: color of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotBorderRadius</code></pre>
+            </span>
+            <span>: border radius of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>backgroundColor</code></pre>
+            </span>
+            <span>: background color of the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>canvasBorderRadius</code></pre>
+            </span>
+            <span>: border radius of the canvas (string) </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p class="functionName">createScrambleCanvas(parentElement, numRows, numCols, gapSize, orderMap, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", canvasBorderRadius="0px")</p>
+            <p class="subTitle">Description:</p>
+            <span>Create the main grid canvas, can only be used if puzzle type is "grid"</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>parentElement</code></pre>
+            </span>
+            <span>: the parent element that wraps the canvas (DOM element), width must be set explicitly: 100%, 50px, etc. </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numRows</code></pre>
+            </span>
+            <span>: number of rows in the puzzle (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numCols</code></pre>
+            </span>
+            <span>: number of columns in the puzzle (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>gapSize</code></pre>
+            </span>
+            <span>: gap size between puzzle slots on the canvas (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>orderMap</code></pre>
+            </span>
+            <span>: a 2D array containing the order the pieces are scrambled, for a 3 x 3 canvas, this might look like: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>const orderMap = [
+                    [8, 1, 3],
+                    [2, 5, 4],
+                    [0, 7, 6]
+                ]</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleBarColor</code></pre>
+            </span>
+            <span>: color of the title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleTextColor</code></pre>
+            </span>
+            <span>: color of the title text (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleText</code></pre>
+            </span>
+            <span>: text to display on title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotColor</code></pre>
+            </span>
+            <span>: color of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotBorderRadius</code></pre>
+            </span>
+            <span>: border radius of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>backgroundColor</code></pre>
+            </span>
+            <span>: background color of the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>canvasBorderRadius</code></pre>
+            </span>
+            <span>: border radius of the canvas (string) </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p class="functionName">createCutoutCanvas(canvasParentElement, cutoutsArray, trayParentElement, numRows, numCols, gapSize, orderMap, cTitleBarColor="cornflowerblue", cTitleTextColor="white", cTitleText="", cSlotColor="grey", cBackgroundColor="white", canvasBorderRadius="0px", slotColor="grey", backgroundColor="white", trayBorderRadius="0px")</p>
+            <p class="subTitle">Description:</p>
+            <span>Create the main grid canvas and the tray, can only be used if puzzle type is "cutout"</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>canvasParentElement</code></pre>
+            </span>
+            <span>: the parent element that wraps the canvas (DOM element), width must be set explicitly: 100%, 50px, etc. </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>cutoutsArray</code></pre>
+            </span>
+            <span>: an array containing the shapes' vertices, for 3 irregular shapes, this might look like: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>const cutoutsArray = [
+                    [
+                        { x: 1800, y: 700 },
+                        { x: 2160, y: 260 },
+                        { x: 2520, y: 700 }
+                    ],
+                    [
+                        { x: 1600, y: 2000 },
+                        { x: 1600, y: 2480 },
+                        { x: 2720, y: 2480 },
+                        { x: 2720, y: 2000 }
+                    ],
+                    [
+                        { x: 1600, y: 1000 },
+                        { x: 1800, y: 1380 },
+                        { x: 2220, y: 1780 },
+                        { x: 2720, y: 1400 }
+                    ]
+                ]</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>trayParentElement</code></pre>
+            </span>
+            <span>: the parent element that wraps the tray (DOM element), width must be set explicitly: 100%, 50px, etc. </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numRows</code></pre>
+            </span>
+            <span>: number of rows in the tray (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numCols</code></pre>
+            </span>
+            <span>: number of columns in the tray (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>gapSize</code></pre>
+            </span>
+            <span>: gap size between puzzle pieces in the tray (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>orderMap</code></pre>
+            </span>
+            <span>: a 2D array containing the order the pieces are displayed in the tray, for a 3 x 3 tray, this might look like: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>const orderMap = [
+                    [8, 1, 3],
+                    [2, 5, 4],
+                    [0, 7, 6]
+                ]</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>cTitleBarColor</code></pre>
+            </span>
+            <span>: color of the title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>cTitleTextColor</code></pre>
+            </span>
+            <span>: color of the title text (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>cTitleText</code></pre>
+            </span>
+            <span>: text to display on title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>cSlotColor</code></pre>
+            </span>
+            <span>: color of each puzzle slot on the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>cBackgroundColor</code></pre>
+            </span>
+            <span>: background color of the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>canvasBorderRadius</code></pre>
+            </span>
+            <span>: border radius of the canvas (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotColor</code></pre>
+            </span>
+            <span>: color of each puzzle slot in the tray (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>backgroundColor</code></pre>
+            </span>
+            <span>: background color of the tray (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>canvasBorderRadius</code></pre>
+            </span>
+            <span>: border radius of the tray (string) </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p class="functionName">createScatterMatchings(slotArray, imgURLArray)</p>
+            <p class="subTitle">Description:</p>
+            <span>Match each slot on the canvas to an image URL. Below, first slot is matched with "./image3_engine.jpg" and etc. </span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>slotArray</code></pre>
+            </span>
+            <span>: an array containing the IDs of the slot (integers from 0), this might look like: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>let slotArray = [0, 1, 2]</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>imgURLArray</code></pre>
+            </span>
+            <span>: an array containing the URLs of the images (string), this might look like: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>let imgURLArray = ["./image3_engine.jpg", "./image3_command.jpg", "image3_lunar.jpg"]</code></pre>
+            </span>
+            <br />
+            <br />
+            <br />
+
+            <div class="divider"></div>
+            <br />
+
+            <p class="functionName">createTray(parentElement, numRows, numCols, gapSize, orderMap, displayTitle, titleBarColor="cornflowerblue", titleTextColor="white", titleText="", slotColor="grey", slotBorderRadius="0px", backgroundColor="white", trayBorderRadius="0px")</p>
+            <p class="subTitle">Description:</p>
+            <span>Create the pieces tray, can only be used if puzzle type is "grid" or "scatter"</span>
+            <p class="subTitle">Arguments:</p>
+            <span class="codeWrapper">
+                <pre><code>parentElement</code></pre>
+            </span>
+            <span>: the parent element that wraps the canvas (DOM element), width must be set explicitly: 100%, 50px, etc. </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numRows</code></pre>
+            </span>
+            <span>: number of rows in the tray (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>numCols</code></pre>
+            </span>
+            <span>: number of columns in the tray (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>gapSize</code></pre>
+            </span>
+            <span>: gap size between puzzle slots in the tray (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>orderMap</code></pre>
+            </span>
+            <span>: a 2D array containing the order the pieces are displayed in the tray, for a 3 x 3 tray, this might look like: </span>
+            <br />
+            <br />
+            <span class="codeWrapperBlock">
+                <pre><code>const orderMap = [
+                    [8, 1, 3],
+                    [2, 5, 4],
+                    [0, 7, 6]
+                ]</code></pre>
+            </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>displayTitle</code></pre>
+            </span>
+            <span>: display title bar for tray? (boolean) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleBarColor</code></pre>
+            </span>
+            <span>: color of the title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleTextColor</code></pre>
+            </span>
+            <span>: color of the title text (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>titleText</code></pre>
+            </span>
+            <span>: text to display on title bar (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotColor</code></pre>
+            </span>
+            <span>: color of each puzzle slot in the tray (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>slotBorderRadius</code></pre>
+            </span>
+            <span>: border radius of each puzzle slot in the tray (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>backgroundColor</code></pre>
+            </span>
+            <span>: background color of the tray (string) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>trayBorderRadius</code></pre>
+            </span>
+            <span>: border radius of the tray (string) </span>
+            <br />
+            <br />
+            <br />
+
+            <h3>Event Handlers</h3>
+            <p class="functionName">"puzzleUpdated"</p>
+            <p class="subTitle">Description:</p>
+            <p>fires every time puzzle is updated, contains information about the puzzle</p>
+            <p class="subTitle">Details:</p>
+            <span class="codeWrapper">
+                <pre><code>detail.pieceStatus</code></pre>
+            </span>
+            <span>: Is the puzzle piece just dropped in the correct slot? (boolean) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>detail.puzzleStatus</code></pre>
+            </span>
+            <span>: Is the puzzle complete? (boolean) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>detail.targetSlotID</code></pre>
+            </span>
+            <span>: The ID of the slot the puzzle piece was dropped into (integer) </span>
+            <br />
+            <br />
+            <span class="codeWrapper">
+                <pre><code>detail.action</code></pre>
+            </span>
+            <span>: can be "drop", "switch", "initial" based on user's actions </span>
+            <p class="subTitle">Use Example:</p>
+            <span class="codeWrapperBlock">
+                <pre><code>canvasContainer.addEventListener('puzzleUpdated', function (e) {
+                    if (e.detail.puzzleStatus) {
+                        console.log("puzzle completed!")
+                    }
+                })</code></pre>
+            </span>
+            <br />
+            <br />
+            <br />
+
+
+            <h2>Overall Work Flow:</h2>
+            <p>This portion shows the standard function call order for each of the following puzzle types:</p>
+            <p class="tab">1. Grid Puzzle</p>
+            <p class="tab">2. Scatter Puzzle</p>
+            <p class="tab">3. Scramble Puzzle</p>
+            <p class="tab">4. Cutout Puzzle</p>
+            <br />
+            <h3>Creating a Grid Puzzle</h3>
+            <p class="subTitle">1. ImagePuzzle</p>
+            <p class="subTitle">2. bindImage</p>
+            <p class="subTitle">3. createGridCanvas</p>
+            <p class="subTitle">4. createTray</p>
+            <br />
+            <h3>Creating a Scatter Puzzle</h3>
+            <p class="subTitle">1. ImagePuzzle</p>
+            <p class="subTitle">2. bindImage</p>
+            <p class="subTitle">3. createScatterCanvas</p>
+            <p class="subTitle">4. createScatterMatchings</p>
+            <p class="subTitle">5. createTray</p>
+            <br />
+            <h3>Creating a Scramble Puzzle</h3>
+            <p class="subTitle">1. ImagePuzzle</p>
+            <p class="subTitle">2. bindImage</p>
+            <p class="subTitle">3. createScrambleCanvas</p>
+            <br />
+            <h3>Creating a Cutout Puzzle</h3>
+            <p class="subTitle">1. ImagePuzzle</p>
+            <p class="subTitle">2. bindImage</p>
+            <p class="subTitle">3. createCutoutCanvas</p>
+            <br />
+        </div>
+    </div>
+ </body>
+
+</html>

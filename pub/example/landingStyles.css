@@ -2,6 +2,12 @@
     margin: 0%;
 }
 
+p {
+    visibility: visible;
+    font-size: large;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
 .mainBackground {
     position: absolute;
     width: 100%;
